@@ -1,8 +1,8 @@
 # ============================================================
-# 🍬👟 CANDY SHOES - DOCKERFILE PARA RENDER
+# 🍬👟 CANDY SHOES - DOCKERFILE PARA RENDER (.NET 10)
 # ============================================================
-# Usa .NET 8 SDK para compilar
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Usa .NET 10 SDK para compilar
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
 # Copiar archivo de proyecto y restaurar dependencias
@@ -16,7 +16,7 @@ RUN dotnet publish -c Release -o out
 # ============================================================
 # Imagen final para ejecutar la aplicación
 # ============================================================
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out .
 
