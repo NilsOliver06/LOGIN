@@ -132,7 +132,7 @@ namespace LOGIN.Controllers
 
             {
 
-                producto.FechaRegistro = DateTime.Now;
+                producto.FechaRegistro = DateTime.UtcNow;
 
                 _context.Add(producto);
 

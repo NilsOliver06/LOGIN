@@ -1,113 +1,74 @@
 ﻿@model LoginViewModel
 
- 
-
 @{
-
-    ViewData["Title"] = "Iniciar Sesión";
-
+    ViewData["Title"] = "Iniciar Sesión - Candy Shoes";
 }
 
- 
-
-<div class="container mt-5">
-
-    <div class="row justify-content-center">
-
-        <div class="col-md-5">
-
-            <div class="card">
-
-                <div class="card-header bg-primary text-white text-center">
-
-                    <h3>Iniciar Sesión</h3>
-
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card-candy">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="fas fa-shoe-prints" style="font-size: 3.5rem; color: #FF6B6B;"></i>
+                    <h3 class="fw-bold mt-2">¡Bienvenido!</h3>
+                    <p class="text-muted">Inicia sesión en Candy Shoes</p>
                 </div>
 
-                <div class="card-body">
+                @if (TempData["Mensaje"] != null)
+                {
+                    <div class="alert alert-success rounded-3 border-0">
+                        <i class="fas fa-check-circle me-2"></i>@TempData["Mensaje"]
+                    </div>
+                }
 
-                    @if (TempData["Mensaje"] != null)
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3" role="alert"></div>
 
-                    {
-
-                        <div class="alert alert-success">@TempData["Mensaje"]</div>
-
-                    }
-
-                     
-
-                    <form asp-action="Login" method="post">
-
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                         
-
-                        <div class="mb-3">
-
-                            <label asp-for="Email" class="form-label">Email</label>
-
-                            <input asp-for="Email" class="form-control" />
-
-                            <span asp-validation-for="Email" class="text-danger"></span>
-
-                        </div>
-
-                         
-
-                        <div class="mb-3">
-
-                            <label asp-for="Password" class="form-label">Contraseña</label>
-
-                            <input asp-for="Password" type="password" class="form-control" />
-
-                            <span asp-validation-for="Password" class="text-danger"></span>
-
-                        </div>
-
-                         
-
-                        <div class="mb-3 form-check">
-
-                            <input asp-for="RememberMe" class="form-check-input" />
-
-                            <label asp-for="RememberMe" class="form-check-label">Recordarme</label>
-
-                        </div>
-
-                         
-
-                        <button type="submit" class="btn btn-primary w-100">Ingresar</button>
-
-                    </form>
-
-                     
-
-                    <hr />
-
-                    <div class="text-center">
-
-                        <a asp-action="Register">¿No tienes cuenta? Regístrate</a>
-
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold">
+                            <i class="fas fa-envelope text-candy-primary me-1"></i>Correo Electrónico
+                        </label>
+                        <input asp-for="Email" class="form-control form-control-lg rounded-3"
+                               placeholder="ejemplo@correo.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
 
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label fw-semibold">
+                            <i class="fas fa-lock text-candy-primary me-1"></i>Contraseña
+                        </label>
+                        <input asp-for="Password" type="password" class="form-control form-control-lg rounded-3"
+                               placeholder="Ingresa tu contraseña" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="RememberMe" class="form-check-input" id="RememberMe" />
+                        <label asp-for="RememberMe" class="form-check-label" for="RememberMe">
+                            <i class="fas fa-check-circle text-candy-secondary me-1"></i>Recordarme
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-candy w-100 btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                    </button>
+                </form>
+
+                <hr class="my-4" />
+
+                <div class="text-center">
+                    <p class="text-muted">¿No tienes cuenta?</p>
+                    <a asp-action="Register" class="btn btn-candy-outline">
+                        <i class="fas fa-user-plus me-2"></i>Regístrate aquí
+                    </a>
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
- 
-
 @section Scripts {
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.13/jquery.validate.unobtrusive.min.js"></script>
-
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

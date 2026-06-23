@@ -1,7 +1,7 @@
-﻿@model LOGIN.Models.Producto
+﻿@model LOGIN.Models.Usuario
 
 @{
-    ViewData["Title"] = "Eliminar Producto - Candy Shoes";
+    ViewData["Title"] = "Eliminar Usuario - Candy Shoes";
 }
 
 <div class="row justify-content-center">
@@ -11,16 +11,16 @@
                 <!-- Encabezado -->
                 <div class="text-center mb-4">
                     <div class="bg-candy-light rounded-circle d-inline-flex p-3 mb-3" style="background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%) !important;">
-                        <i class="fas fa-exclamation-triangle text-white" style="font-size: 2rem;"></i>
+                        <i class="fas fa-user-slash text-white" style="font-size: 2rem;"></i>
                     </div>
-                    <h2 class="fw-bold text-danger">Confirmar Eliminación</h2>
+                    <h2 class="fw-bold text-danger">Eliminar Usuario</h2>
                     <p class="text-danger">⚠️ Esta acción no se puede deshacer</p>
                 </div>
 
-                <!-- Producto a eliminar -->
+                <!-- Usuario a eliminar -->
                 <div class="text-center mb-4">
                     <div class="bg-candy-light rounded-4 p-4 d-inline-block" style="background: linear-gradient(135deg, #FFF8F0 0%, #FFE8D6 100%);">
-                        <i class="fas fa-shoe-prints" style="font-size: 4rem; color: #FF6B6B;"></i>
+                        <i class="fas fa-user-circle" style="font-size: 4rem; color: #FF6B6B;"></i>
                     </div>
                     <h4 class="fw-bold mt-3">@Model.Nombre</h4>
                     <p class="text-muted">#@Model.Id</p>
@@ -28,23 +28,23 @@
 
                 <div class="alert alert-warning rounded-3 border-0">
                     <i class="fas fa-info-circle me-2"></i>
-                    <strong>¿Estás seguro?</strong> El producto se eliminará permanentemente del inventario.
+                    <strong>¿Estás seguro?</strong> El usuario se eliminará permanentemente del sistema.
                 </div>
 
-                <!-- Resumen del producto -->
+                <!-- Resumen del usuario -->
                 <div class="bg-light rounded-3 p-3 mb-4">
                     <dl class="row mb-0">
-                        <dt class="col-sm-5 fw-semibold">Nombre</dt>
-                        <dd class="col-sm-7 text-secondary">@Model.Nombre</dd>
+                        <dt class="col-sm-4 fw-semibold">Nombre</dt>
+                        <dd class="col-sm-8 text-secondary">@Model.Nombre</dd>
 
-                        <dt class="col-sm-5 fw-semibold">Descripción</dt>
-                        <dd class="col-sm-7 text-secondary">@(Model.Descripcion ?? "---")</dd>
+                        <dt class="col-sm-4 fw-semibold">Email</dt>
+                        <dd class="col-sm-8 text-secondary">@Model.Email</dd>
 
-                        <dt class="col-sm-5 fw-semibold">Stock</dt>
-                        <dd class="col-sm-7">@Model.Cantidad unidades</dd>
+                        <dt class="col-sm-4 fw-semibold">Edad</dt>
+                        <dd class="col-sm-8 text-secondary">@Model.Edad</dd>
 
-                        <dt class="col-sm-5 fw-semibold">Precio</dt>
-                        <dd class="col-sm-7 fw-bold text-candy-primary">@Model.Precio.ToString("C")</dd>
+                        <dt class="col-sm-4 fw-semibold">Ciudad</dt>
+                        <dd class="col-sm-8 text-secondary">@Model.Ciudad</dd>
                     </dl>
                 </div>
 

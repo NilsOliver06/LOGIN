@@ -50,7 +50,7 @@ namespace LOGIN.Models
 
 
 
-        public DateTime FechaRegistro { get; set; } = DateTime.Now;
+        public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;
 
     }
 

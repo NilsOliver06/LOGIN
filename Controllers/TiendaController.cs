@@ -244,5 +244,254 @@ namespace LOGIN.Controllers
 
             return View(pedidos);
         }
+        // ============================================================
+        // NUEVOS MÉTODOS - CRUD DE PEDIDOS
+        // ============================================================
+
+        // GET: Tienda/AdminPedidos (Lista de todos los pedidos - solo Admin)
+        [HttpGet]
+        public async Task<IActionResult> AdminPedidos()
+        {
+            // Verificar si es Admin
+            var usuarioId = HttpContext.Session.GetString("UsuarioId");
+            if (string.IsNullOrEmpty(usuarioId))
+                return RedirectToAction("Login", "Account");
+
+            var usuario = await _context.Usuarios.FindAsync(int.Parse(usuarioId));
+            if (usuario?.Email != "admin@candyshoes.pe")
+                return RedirectToAction("Login", "Account");
+
+            var pedidos = await _context.Pedidos
+                .Include(p => p.Usuario)
+                .Include(p => p.Detalles!)
+                    .ThenInclude(d => d.Producto)
+                .OrderByDescending(p => p.FechaPedido)
+                .ToListAsync();
+
+            return View(pedidos);
+        }
+
+        // GET: Tienda/Details/5 (Detalles del pedido)
+        [HttpGet]
+        public async Task<IActionResult> Details(int? id)
+        {
+            var usuarioId = HttpContext.Session.GetString("UsuarioId");
+            if (string.IsNullOrEmpty(usuarioId))
+                return RedirectToAction("Login", "Account");
+
+            if (id == null)
+                return NotFound();
+
+            var pedido = await _context.Pedidos
+                .Include(p => p.Usuario)
+                .Include(p => p.Detalles!)
+                    .ThenInclude(d => d.Producto)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pedido == null)
+                return NotFound();
+
+            // Verificar que el usuario tenga acceso al pedido
+            var usuarioActual = await _context.Usuarios.FindAsync(int.Parse(usuarioId));
+            bool esAdmin = usuarioActual?.Email == "admin@candyshoes.pe";
+
+            if (!esAdmin && pedido.UsuarioId != int.Parse(usuarioId))
+                return RedirectToAction("MisCompras");
+
+            return View(pedido);
+        }
+
+        // GET: Tienda/Edit/5 (Cambiar estado del pedido - solo Admin)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            var usuarioId = HttpContext.Session.GetString("UsuarioId");
+            if (string.IsNullOrEmpty(usuarioId))
+                return RedirectToAction("Login", "Account");
+
+            var usuario = await _context.Usuarios.FindAsync(int.Parse(usuarioId));
+            if (usuario?.Email != "admin@candyshoes.pe")
+                return RedirectToAction("Login", "Account");
+
+            if (id == null)
+                return NotFound();
+
+            var pedido = await _context.Pedidos
+                .Include(p => p.Usuario)
+                .Include(p => p.Detalles!)
+                    .ThenInclude(d => d.Producto)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pedido == null)
+                return NotFound();
+
+            return View(pedido);
+        }
+
+        // POST: Tienda/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Pedido pedido)
+        {
+            var usuarioId = HttpContext.Session.GetString("UsuarioId");
+            if (string.IsNullOrEmpty(usuarioId))
+                return RedirectToAction("Login", "Account");
+
+            var usuario = await _context.Usuarios.FindAsync(int.Parse(usuarioId));
+            if (usuario?.Email != "admin@candyshoes.pe")
+                return RedirectToAction("Login", "Account");
+
+            if (id != pedido.Id)
+                return NotFound();
+
+            try
+            {
+                var existente = await _context.Pedidos.FindAsync(id);
+                if (existente == null)
+                    return NotFound();
+
+                // Actualizar solo el estado
+                existente.Estado = pedido.Estado;
+
+                _context.Update(existente);
+                await _context.SaveChangesAsync();
+
+                TempData["Mensaje"] = $"✅ Estado del pedido #{id} actualizado a {existente.Estado}";
+                return RedirectToAction(nameof(AdminPedidos));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PedidoExists(pedido.Id))
+                    return NotFound();
+                throw;
+            }
+        }
+
+        // GET: Tienda/Cancelar/5 (Cancelar pedido - Usuario o Admin)
+        [HttpGet]
+        public async Task<IActionResult> Cancelar(int? id)
+        {
+            var usuarioId = HttpContext.Session.GetString("UsuarioId");
+            if (string.IsNullOrEmpty(usuarioId))
+                return RedirectToAction("Login", "Account");
+
+            if (id == null)
+                return NotFound();
+
+            var pedido = await _context.Pedidos
+                .Include(p => p.Usuario)
+                .Include(p => p.Detalles!)
+                    .ThenInclude(d => d.Producto)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pedido == null)
+                return NotFound();
+
+            // Verificar que el usuario tenga acceso al pedido
+            var usuarioActual = await _context.Usuarios.FindAsync(int.Parse(usuarioId));
+            bool esAdmin = usuarioActual?.Email == "admin@candyshoes.pe";
+
+            if (!esAdmin && pedido.UsuarioId != int.Parse(usuarioId))
+                return RedirectToAction("MisCompras");
+
+            // No permitir cancelar si ya fue entregado
+            if (pedido.Estado == EstadoPedido.Entregado)
+            {
+                TempData["Error"] = "⚠️ No se puede cancelar un pedido que ya fue entregado";
+                return RedirectToAction("MisCompras");
+            }
+
+            return View(pedido);
+        }
+
+        // POST: Tienda/Cancelar/5
+        [HttpPost]
+        [ActionName("Cancelar")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelarConfirmed(int id)
+        {
+            var usuarioId = HttpContext.Session.GetString("UsuarioId");
+            if (string.IsNullOrEmpty(usuarioId))
+                return RedirectToAction("Login", "Account");
+
+            var pedido = await _context.Pedidos
+                .Include(p => p.Detalles!)
+                .ThenInclude(d => d.Producto)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pedido == null)
+                return NotFound();
+
+            // Verificar que el usuario tenga acceso al pedido
+            var usuarioActual = await _context.Usuarios.FindAsync(int.Parse(usuarioId));
+            bool esAdmin = usuarioActual?.Email == "admin@candyshoes.pe";
+
+            if (!esAdmin && pedido.UsuarioId != int.Parse(usuarioId))
+                return RedirectToAction("MisCompras");
+
+            if (pedido.Estado == EstadoPedido.Entregado)
+            {
+                TempData["Error"] = "⚠️ No se puede cancelar un pedido que ya fue entregado";
+                return RedirectToAction("MisCompras");
+            }
+
+            // Cambiar estado a Cancelado
+            pedido.Estado = EstadoPedido.Cancelado;
+
+            // Devolver stock a los productos
+            foreach (var detalle in pedido.Detalles!)
+            {
+                var producto = await _context.Productos.FindAsync(detalle.ProductoId);
+                if (producto != null)
+                {
+                    producto.Cantidad += detalle.Cantidad;
+                    _context.Update(producto);
+                }
+            }
+
+            _context.Update(pedido);
+            await _context.SaveChangesAsync();
+
+            TempData["Mensaje"] = $"✅ Pedido #{id} cancelado correctamente";
+
+            if (esAdmin)
+                return RedirectToAction(nameof(AdminPedidos));
+            else
+                return RedirectToAction(nameof(MisCompras));
+        }
+        // GET: Tienda/PedidoDetails/5 (Detalles del pedido)
+        [HttpGet]
+        public async Task<IActionResult> PedidoDetails(int? id)
+        {
+            var usuarioId = HttpContext.Session.GetString("UsuarioId");
+            if (string.IsNullOrEmpty(usuarioId))
+                return RedirectToAction("Login", "Account");
+
+            if (id == null)
+                return NotFound();
+
+            var pedido = await _context.Pedidos
+                .Include(p => p.Usuario)
+                .Include(p => p.Detalles!)
+                    .ThenInclude(d => d.Producto)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pedido == null)
+                return NotFound();
+
+            // Verificar que el usuario tenga acceso al pedido
+            var usuarioActual = await _context.Usuarios.FindAsync(int.Parse(usuarioId));
+            bool esAdminUser = usuarioActual?.Email == "admin@candyshoes.pe";
+
+            if (!esAdminUser && pedido.UsuarioId != int.Parse(usuarioId))
+                return RedirectToAction("MisCompras");
+
+            return View("PedidoDetails", pedido);
+        }
+
+        private bool PedidoExists(int id)
+        {
+            return _context.Pedidos.Any(e => e.Id == id);
+        }
     }
 }

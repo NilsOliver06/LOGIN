@@ -1,83 +1,194 @@
 ﻿@model List<LOGIN.Models.Pedido>
 
 @{
-    ViewData["Title"] = "Mis Compras";
+    ViewData["Title"] = "Mis Compras - Candy Shoes";
 }
 
-<div class="container mt-4">
-    <div class="card card-modern">
-        <div class="card-header bg-white border-bottom-0 pt-4">
-            <h2 class="h3 fw-bold">
-                <i class="bi bi-clock-history text-info"></i> Mis Compras
-            </h2>
-        </div>
-        <div class="card-body p-4">
-            @if (!Model.Any())
-            {
-                <div class="text-center py-5">
-                    <i class="bi bi-receipt fs-1 text-muted"></i>
-                    <h4 class="mt-3">No has realizado compras aún</h4>
-                    <a asp-action="Index" class="btn btn-gradient mt-3">
-                        <i class="bi bi-shop"></i> Comenzar a comprar
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card-candy">
+            <div class="card-body p-4 p-lg-5">
+                <!-- Encabezado -->
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                    <div>
+                        <h2 class="fw-bold">
+                            <i class="fas fa-clock-history text-candy-primary me-2"></i>Mis Compras
+                        </h2>
+                        <p class="text-muted">Historial de todos tus pedidos en Candy Shoes</p>
+                    </div>
+                    <a asp-action="Index" class="btn btn-candy-outline">
+                        <i class="fas fa-store me-2"></i>Seguir comprando
                     </a>
                 </div>
-            }
-            else
-            {
-                @foreach (var pedido in Model)
+
+                @if (TempData["Mensaje"] != null)
                 {
-                    <div class="card mb-3 border">
-                        <div class="card-header bg-light">
-                            <div class="d-flex justify-content-between align-items-center flex-wrap">
-                                <div>
-                                    <strong>Pedido #@pedido.Id</strong>
-                                    <span class="badge @(pedido.Estado.ToString() switch
-                                          {
-                                              "Confirmado" => "bg-success",
-                                              "Entregado" => "bg-primary",
-                                              "Cancelado" => "bg-danger",
-                                              _ => "bg-secondary"
-                                          }) ms-2">@pedido.Estado</span>
-                                </div>
-                                <div class="text-muted small">
-                                    <i class="bi bi-calendar"></i> @pedido.FechaPedido.ToString("dd/MM/yyyy HH:mm")
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <div class="table-responsive">
-                                        <table class="table table-sm">
-                                            <thead>
-                                                <tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th></tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var detalle in pedido.Detalles!)
-                                                {
-                                                    <tr>
-                                                        <td>@detalle.Producto?.Nombre</td>
-                                                        <td>@detalle.Cantidad</td>
-                                                        <td>@detalle.PrecioUnitario.ToString("C")</td>
-                                                        <td>@detalle.Subtotal.ToString("C")</td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="bg-light p-3 rounded">
-                                        <p class="mb-1"><strong>Total:</strong> @pedido.Total.ToString("C")</p>
-                                        <p class="mb-1"><strong>Envío:</strong> @pedido.DireccionEnvio</p>
-                                        <p class="mb-0"><strong>Referencia:</strong> @pedido.NumeroReferencia</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="alert alert-success rounded-3 border-0 shadow-sm alert-dismissible fade show">
+                        <i class="fas fa-check-circle me-2"></i>@TempData["Mensaje"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 }
-            }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger rounded-3 border-0 shadow-sm alert-dismissible fade show">
+                        <i class="fas fa-exclamation-circle me-2"></i>@TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @if (!Model.Any())
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-receipt" style="font-size: 4rem; color: #ddd;"></i>
+                        <h4 class="mt-3 text-muted">No has realizado compras aún</h4>
+                        <p class="text-muted">¡Explora nuestra tienda y encuentra tu calzado ideal!</p>
+                        <a asp-action="Index" class="btn btn-candy mt-3">
+                            <i class="fas fa-store me-2"></i>Ir a la Tienda
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex flex-column gap-4">
+                        @foreach (var pedido in Model)
+                        {
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                                <!-- Header del pedido -->
+                                <div class="card-header bg-white py-3 px-4">
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                        <div>
+                                            <span class="fw-bold fs-5">Pedido #@pedido.Id</span>
+                                            <span class="badge @(pedido.Estado.ToString() switch
+                                                  {
+                                                      "Confirmado" => "bg-success",
+                                                      "Entregado" => "bg-primary",
+                                                      "Cancelado" => "bg-danger",
+                                                      "Enviado" => "bg-info",
+                                                      "Pendiente" => "bg-warning text-dark",
+                                                      _ => "bg-secondary"
+                                                  }) ms-2 px-3 py-2 rounded-pill">
+                                                @switch (pedido.Estado.ToString())
+                                                {
+                                                    case "Confirmado":
+                                                        <i class="fas fa-check-circle me-1"></i>
+                                                        @pedido.Estado
+                                                        ; break;
+                                                    case "Entregado":
+
+                                                        <i class="fas fa-box-open me-1"></i>
+                                                        @pedido.Estado
+                                                        ; break;
+                                                    case "Cancelado":
+
+                                                        <i class="fas fa-times-circle me-1"></i>
+                                                        @pedido.Estado
+                                                        ; break;
+                                                    case "Enviado":
+
+                                                        <i class="fas fa-truck me-1"></i>
+                                                        @pedido.Estado
+                                                        ; break;
+                                                    case "Pendiente":
+
+                                                        <i class="fas fa-clock me-1"></i>
+                                                        @pedido.Estado
+                                                        ; break;
+                                                    default:
+
+                                                        @pedido.Estado
+                                                        ; break;
+                                                }
+                                            </span>
+                                        </div>
+                                        <div class="text-muted small">
+                                            <i class="fas fa-calendar-alt me-1"></i>
+                                            @pedido.FechaPedido.ToString("dd/MM/yyyy HH:mm")
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body p-4">
+                                    <div class="row g-4">
+                                        <!-- Detalles de productos -->
+                                        <div class="col-md-7">
+                                            <h6 class="fw-bold mb-3">
+                                                <i class="fas fa-box text-candy-primary me-2"></i>Productos
+                                            </h6>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Producto</th>
+                                                            <th class="text-center">Cantidad</th>
+                                                            <th class="text-end">Precio</th>
+                                                            <th class="text-end">Subtotal</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var detalle in pedido.Detalles!)
+                                                        {
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="d-flex align-items-center gap-2">
+                                                                        <i class="fas fa-shoe-prints" style="color: #FF6B6B;"></i>
+                                                                        <span>@detalle.Producto?.Nombre</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="text-center">@detalle.Cantidad</td>
+                                                                <td class="text-end">@detalle.PrecioUnitario.ToString("C")</td>
+                                                                <td class="text-end fw-bold">@detalle.Subtotal.ToString("C")</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <!-- Resumen del pedido -->
+                                        <div class="col-md-5">
+                                            <div class="bg-candy-light rounded-3 p-3 h-100">
+                                                <h6 class="fw-bold mb-3">
+                                                    <i class="fas fa-info-circle text-candy-primary me-2"></i>Información del Pedido
+                                                </h6>
+                                                <div class="mb-2">
+                                                    <span class="text-muted">Total:</span>
+                                                    <span class="fw-bold fs-5 text-candy-primary">@pedido.Total.ToString("C")</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <span class="text-muted">Referencia:</span>
+                                                    <span class="fw-bold">@pedido.NumeroReferencia</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <span class="text-muted">Envío:</span>
+                                                    <span>@pedido.DireccionEnvio</span>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <span class="text-muted">Pago:</span>
+                                                    <span>@pedido.MetodoPago</span>
+                                                </div>
+
+                                                <!-- Botones de acción -->
+                                                <div class="d-flex gap-2 flex-wrap">
+                                                    <!-- 👇 CAMBIO: Ahora usa PedidoDetails -->
+                                                    <a asp-action="PedidoDetails" asp-route-id="@pedido.Id" class="btn btn-sm btn-candy-outline">
+                                                        <i class="fas fa-eye me-1"></i>Ver
+                                                    </a>
+                                                    @if (pedido.Estado != EstadoPedido.Cancelado && pedido.Estado != EstadoPedido.Entregado)
+                                                    {
+                                                        <a asp-action="Cancelar" asp-route-id="@pedido.Id" class="btn btn-sm btn-outline-danger">
+                                                            <i class="fas fa-times me-1"></i>Cancelar
+                                                        </a>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>

@@ -1,0 +1,89 @@
+﻿@model LOGIN.Models.Usuario
+
+@{
+    ViewData["Title"] = "Editar Usuario - Candy Shoes";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card-candy">
+            <div class="card-body p-4 p-lg-5">
+                <!-- Encabezado -->
+                <div class="text-center mb-4">
+                    <div class="bg-candy-light rounded-circle d-inline-flex p-3 mb-3" style="background: linear-gradient(135deg, #F59E0B 0%, #FCD34D 100%) !important;">
+                        <i class="fas fa-user-edit text-white" style="font-size: 2rem;"></i>
+                    </div>
+                    <h2 class="fw-bold">Editar Usuario</h2>
+                    <p class="text-muted">Modifica la información del usuario #@Model.Id</p>
+                </div>
+
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3" role="alert"></div>
+
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="FechaRegistro" />
+
+                    <div class="mb-3">
+                        <label asp-for="Nombre" class="form-label fw-semibold">
+                            <i class="fas fa-user text-candy-primary me-1"></i>Nombre *
+                        </label>
+                        <input asp-for="Nombre" class="form-control form-control-lg rounded-3" />
+                        <span asp-validation-for="Nombre" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold">
+                            <i class="fas fa-envelope text-candy-primary me-1"></i>Email *
+                        </label>
+                        <input asp-for="Email" type="email" class="form-control form-control-lg rounded-3" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label fw-semibold">
+                            <i class="fas fa-lock text-candy-primary me-1"></i>Nueva Contraseña
+                        </label>
+                        <input asp-for="Password" type="password" class="form-control form-control-lg rounded-3"
+                               placeholder="Dejar en blanco para mantener la actual" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                        <div class="form-text">⚠️ Solo si deseas cambiar la contraseña</div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Edad" class="form-label fw-semibold">
+                                <i class="fas fa-calendar-alt text-candy-primary me-1"></i>Edad *
+                            </label>
+                            <input asp-for="Edad" type="number" class="form-control form-control-lg rounded-3" min="1" max="120" />
+                            <span asp-validation-for="Edad" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Ciudad" class="form-label fw-semibold">
+                                <i class="fas fa-city text-candy-primary me-1"></i>Ciudad *
+                            </label>
+                            <input asp-for="Ciudad" class="form-control form-control-lg rounded-3" />
+                            <span asp-validation-for="Ciudad" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a asp-action="Index" class="btn btn-candy-outline px-4">
+                            <i class="fas fa-arrow-left me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-warning px-4" style="color: white;">
+                            <i class="fas fa-save me-2"></i>Actualizar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

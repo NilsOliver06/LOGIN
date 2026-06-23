@@ -1,0 +1,80 @@
+﻿@model LOGIN.Models.Pedido
+
+@{
+    ViewData["Title"] = $"Editar Pedido #{Model.Id} - Candy Shoes";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card-candy">
+            <div class="card-body p-4 p-lg-5">
+                <!-- Encabezado -->
+                <div class="text-center mb-4">
+                    <div class="bg-candy-light rounded-circle d-inline-flex p-3 mb-3" style="background: linear-gradient(135deg, #F59E0B 0%, #FCD34D 100%) !important;">
+                        <i class="fas fa-edit text-white" style="font-size: 2rem;"></i>
+                    </div>
+                    <h2 class="fw-bold">Cambiar Estado del Pedido</h2>
+                    <p class="text-muted">Pedido #@Model.Id - Cliente: @Model.Usuario?.Nombre</p>
+                </div>
+
+                <div class="bg-light rounded-3 p-3 mb-4">
+                    <div class="row">
+                        <div class="col-6">
+                            <span class="text-muted">Total:</span>
+                            <span class="fw-bold text-candy-primary">@Model.Total.ToString("C")</span>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted">Fecha:</span>
+                            <span>@Model.FechaPedido.ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3" role="alert"></div>
+
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="UsuarioId" />
+                    <input type="hidden" asp-for="FechaPedido" />
+                    <input type="hidden" asp-for="Total" />
+                    <input type="hidden" asp-for="DireccionEnvio" />
+                    <input type="hidden" asp-for="MetodoPago" />
+                    <input type="hidden" asp-for="NumeroReferencia" />
+
+                    <div class="mb-4">
+                        <label asp-for="Estado" class="form-label fw-semibold">
+                            <i class="fas fa-tag text-candy-primary me-1"></i>Estado del Pedido *
+                        </label>
+                        <select asp-for="Estado" class="form-select form-select-lg rounded-3" required>
+                            <option value="">🔽 Selecciona un estado</option>
+                            @foreach (EstadoPedido estado in Enum.GetValues(typeof(EstadoPedido)))
+                            {
+                                <option value="@estado" selected="@(Model.Estado == estado)">
+                                    @estado
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="Estado" class="text-danger small"></span>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a asp-action="AdminPedidos" class="btn btn-candy-outline px-4">
+                            <i class="fas fa-arrow-left me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-warning px-4" style="color: white;">
+                            <i class="fas fa-save me-2"></i>Actualizar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

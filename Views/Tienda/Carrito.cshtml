@@ -1,102 +1,124 @@
 ﻿@model List<LOGIN.Models.CarritoItem>
 
 @{
-    ViewData["Title"] = "Mi Carrito";
+    ViewData["Title"] = "Mi Carrito - Candy Shoes";
 }
 
-<div class="container mt-4">
-    <div class="card card-modern">
-        <div class="card-header bg-white border-bottom-0 pt-4">
-            <h2 class="h3 fw-bold">
-                <i class="bi bi-cart3 text-primary"></i> Mi Carrito
-            </h2>
-        </div>
-        <div class="card-body p-4">
-            @if (!Model.Any())
-            {
-                <div class="text-center py-5">
-                    <i class="bi bi-cart-x fs-1 text-muted"></i>
-                    <h4 class="mt-3">Tu carrito está vacío</h4>
-                    <a asp-action="Index" class="btn btn-gradient mt-3">
-                        <i class="bi bi-shop"></i> Seguir comprando
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card-candy">
+            <div class="card-body p-4 p-lg-5">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                    <div>
+                        <h2 class="fw-bold">
+                            <i class="fas fa-shopping-cart text-candy-primary me-2"></i>Mi Carrito
+                        </h2>
+                        <p class="text-muted">Revisa tus productos antes de comprar</p>
+                    </div>
+                    <a asp-action="Index" class="btn btn-candy-outline">
+                        <i class="fas fa-arrow-left me-2"></i>Seguir comprando
                     </a>
-                </div>
-            }
-            else
-            {
-                <div class="table-responsive">
-                    <table class="table align-middle">
-                        <thead class="bg-light">
-                            <tr>
-                                <th>Producto</th>
-                                <th class="text-center">Cantidad</th>
-                                <th class="text-end">Precio</th>
-                                <th class="text-end">Subtotal</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <i class="bi bi-box-seam fs-2 text-secondary"></i>
-                                            <div>
-                                                <h6 class="mb-0 fw-bold">@item.Producto?.Nombre</h6>
-                                                <small class="text-muted">Stock: @item.Producto?.Cantidad</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="input-group" style="width: 120px; margin: 0 auto;">
-                                            <button class="btn btn-outline-secondary btn-minus" data-id="@item.Id">-</button>
-                                            <input type="number" class="form-control text-center cantidad-input" data-id="@item.Id" value="@item.Cantidad" min="1" max="@item.Producto?.Cantidad" />
-                                            <button class="btn btn-outline-secondary btn-plus" data-id="@item.Id">+</button>
-                                        </div>
-                                    </td>
-                                    <td class="text-end">@item.Producto?.Precio.ToString("C")</td>
-                                    <td class="text-end fw-bold subtotal" data-id="@item.Id">
-                                        @((item.Cantidad * (item.Producto?.Precio ?? 0)).ToString("C"))
-                                    </td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-danger btn-remove" data-id="@item.Id">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                        <tfoot class="border-top">
-                            <tr>
-                                <td colspan="3" class="text-end fw-bold fs-5">Total:</td>
-                                <td class="text-end fw-bold fs-4 text-primary" id="total">
-                                    @ViewBag.Total.ToString("C")
-                                </td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
                 </div>
 
-                <div class="d-flex justify-content-between mt-4">
-                    <a asp-action="Index" class="btn btn-light rounded-pill px-4">
-                        <i class="bi bi-arrow-left"></i> Seguir comprando
-                    </a>
-                    <a asp-action="Checkout" class="btn btn-gradient rounded-pill px-4">
-                        Proceder al pago <i class="bi bi-arrow-right"></i>
-                    </a>
-                </div>
-            }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger rounded-3 border-0">
+                        <i class="fas fa-exclamation-circle me-2"></i>@TempData["Error"]
+                    </div>
+                }
+
+                @if (!Model.Any())
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-cart-plus" style="font-size: 4rem; color: #ddd;"></i>
+                        <h4 class="mt-3 text-muted">Tu carrito está vacío</h4>
+                        <p class="text-muted">¡Explora nuestra tienda y encuentra tu calzado ideal!</p>
+                        <a asp-action="Index" class="btn btn-candy mt-3">
+                            <i class="fas fa-store me-2"></i>Ir a la Tienda
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="bg-candy-light">
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-end">Precio</th>
+                                    <th class="text-end">Subtotal</th>
+                                    <th class="text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <i class="fas fa-shoe-prints" style="font-size: 2rem; color: #FF6B6B;"></i>
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold">@item.Producto?.Nombre</h6>
+                                                    <small class="text-muted">Stock: @item.Producto?.Cantidad</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="input-group" style="width: 120px; margin: 0 auto;">
+                                                <button class="btn btn-outline-secondary btn-minus" data-id="@item.Id">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                                <input type="number" class="form-control text-center cantidad-input"
+                                                       data-id="@item.Id" value="@item.Cantidad" min="1" max="@item.Producto?.Cantidad" />
+                                                <button class="btn btn-outline-secondary btn-plus" data-id="@item.Id">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td class="text-end">@item.Producto?.Precio.ToString("C")</td>
+                                        <td class="text-end fw-bold subtotal" data-id="@item.Id">
+                                            @((item.Cantidad * (item.Producto?.Precio ?? 0)).ToString("C"))
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-outline-danger btn-remove" data-id="@item.Id">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold fs-5">Total:</td>
+                                    <td class="text-end fw-bold fs-4 text-candy-primary" id="total">
+                                        @ViewBag.Total.ToString("C")
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mt-4">
+                        <div>
+                            <i class="fas fa-truck text-candy-secondary me-1"></i>
+                            <span class="text-muted">Envíos disponibles a todo el país</span>
+                        </div>
+                        <a asp-action="Checkout" class="btn btn-candy btn-lg">
+                            <i class="fas fa-credit-card me-2"></i>Proceder al Pago
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function actualizarCarrito() {
-    location.reload();
-    }
+    function actualizarCarrito() { location.reload(); }
 
     $(document).ready(function() {
     function actualizarItem(itemId, nuevaCantidad) {
@@ -106,28 +128,32 @@
     if (response.itemRemoved) {
     actualizarCarrito();
     } else {
-    $(`.subtotal[data-id='${itemId}']`).text('$' + response.subtotal.toFixed(2));
+    $('.subtotal[data-id="' + itemId + '"]').text('$' + response.subtotal.toFixed(2));
     $('#total').text('$' + response.total.toFixed(2));
+    $('#cartBadge').text(response.count);
     }
     } else if (response.message) {
     alert(response.message);
     actualizarCarrito();
     }
-    });
+    })
+    .fail(function() { alert('Error al actualizar'); });
     }
 
     $('.btn-plus').click(function() {
     var itemId = $(this).data('id');
-    var input = $(`.cantidad-input[data-id='${itemId}']`);
+    var input = $('.cantidad-input[data-id="' + itemId + '"]');
     var nuevaCantidad = parseInt(input.val()) + 1;
     actualizarItem(itemId, nuevaCantidad);
     });
 
     $('.btn-minus').click(function() {
     var itemId = $(this).data('id');
-    var input = $(`.cantidad-input[data-id='${itemId}']`);
+    var input = $('.cantidad-input[data-id="' + itemId + '"]');
     var nuevaCantidad = parseInt(input.val()) - 1;
+    if (nuevaCantidad > 0) {
     actualizarItem(itemId, nuevaCantidad);
+    }
     });
 
     $('.cantidad-input').change(function() {

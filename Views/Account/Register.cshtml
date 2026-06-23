@@ -1,131 +1,88 @@
 ﻿@model Usuario
 
- 
-
 @{
-
-    ViewData["Title"] = "Registro";
-
+    ViewData["Title"] = "Registro - Candy Shoes";
 }
 
- 
-
-<div class="container mt-5">
-
-    <div class="row justify-content-center">
-
-        <div class="col-md-6">
-
-            <div class="card">
-
-                <div class="card-header bg-success text-white text-center">
-
-                    <h3>Registro de Usuario</h3>
-
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card-candy">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-plus" style="font-size: 3.5rem; color: #4ECDC4;"></i>
+                    <h3 class="fw-bold mt-2">Crear Cuenta</h3>
+                    <p class="text-muted">Únete a la familia Candy Shoes</p>
                 </div>
 
-                <div class="card-body">
+                <form asp-action="Register" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3" role="alert"></div>
 
-                    <form asp-action="Register" method="post">
-
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                         
-
-                        <div class="mb-3">
-
-                            <label asp-for="Nombre" class="form-label">Nombre</label>
-
-                            <input asp-for="Nombre" class="form-control" />
-
-                            <span asp-validation-for="Nombre" class="text-danger"></span>
-
-                        </div>
-
-                         
-
-                        <div class="mb-3">
-
-                            <label asp-for="Email" class="form-label">Email</label>
-
-                            <input asp-for="Email" type="email" class="form-control" />
-
-                            <span asp-validation-for="Email" class="text-danger"></span>
-
-                        </div>
-
-                         
-
-                        <div class="mb-3">
-
-                            <label asp-for="Password" class="form-label">Contraseña</label>
-
-                            <input asp-for="Password" type="password" class="form-control" />
-
-                            <span asp-validation-for="Password" class="text-danger"></span>
-
-                        </div>
-
-                         
-
-                        <div class="row">
-
-                            <div class="col-md-6 mb-3">
-
-                                <label asp-for="Edad" class="form-label">Edad</label>
-
-                                <input asp-for="Edad" type="number" class="form-control" />
-
-                                <span asp-validation-for="Edad" class="text-danger"></span>
-
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-
-                                <label asp-for="Ciudad" class="form-label">Ciudad</label>
-
-                                <input asp-for="Ciudad" class="form-control" />
-
-                                <span asp-validation-for="Ciudad" class="text-danger"></span>
-
-                            </div>
-
-                        </div>
-
-                         
-
-                        <button type="submit" class="btn btn-success w-100">Registrarse</button>
-
-                    </form>
-
-                     
-
-                    <hr />
-
-                    <div class="text-center">
-
-                        <a asp-action="Login">¿Ya tienes cuenta? Inicia sesión</a>
-
+                    <div class="mb-3">
+                        <label asp-for="Nombre" class="form-label fw-semibold">
+                            <i class="fas fa-user text-candy-primary me-1"></i>Nombre Completo
+                        </label>
+                        <input asp-for="Nombre" class="form-control form-control-lg rounded-3"
+                               placeholder="Ej. Juan Pérez" />
+                        <span asp-validation-for="Nombre" class="text-danger small"></span>
                     </div>
 
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold">
+                            <i class="fas fa-envelope text-candy-primary me-1"></i>Correo Electrónico
+                        </label>
+                        <input asp-for="Email" type="email" class="form-control form-control-lg rounded-3"
+                               placeholder="ejemplo@correo.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label fw-semibold">
+                            <i class="fas fa-lock text-candy-primary me-1"></i>Contraseña
+                        </label>
+                        <input asp-for="Password" type="password" class="form-control form-control-lg rounded-3"
+                               placeholder="Mínimo 6 caracteres" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Edad" class="form-label fw-semibold">
+                                <i class="fas fa-calendar-alt text-candy-secondary me-1"></i>Edad
+                            </label>
+                            <input asp-for="Edad" type="number" class="form-control form-control-lg rounded-3"
+                                   placeholder="18" min="1" max="120" />
+                            <span asp-validation-for="Edad" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Ciudad" class="form-label fw-semibold">
+                                <i class="fas fa-city text-candy-secondary me-1"></i>Ciudad
+                            </label>
+                            <input asp-for="Ciudad" class="form-control form-control-lg rounded-3"
+                                   placeholder="Ej. Lima" />
+                            <span asp-validation-for="Ciudad" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-candy w-100 btn-lg mt-3">
+                        <i class="fas fa-user-plus me-2"></i>Registrarme
+                    </button>
+                </form>
+
+                <hr class="my-4" />
+
+                <div class="text-center">
+                    <p class="text-muted">¿Ya tienes cuenta?</p>
+                    <a asp-action="Login" class="btn btn-candy-outline">
+                        <i class="fas fa-sign-in-alt me-2"></i>Inicia Sesión
+                    </a>
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
- 
-
 @section Scripts {
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.13/jquery.validate.unobtrusive.min.js"></script>
-
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

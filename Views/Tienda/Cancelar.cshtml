@@ -1,0 +1,75 @@
+﻿@model LOGIN.Models.Pedido
+
+@{
+    ViewData["Title"] = $"Cancelar Pedido #{Model.Id} - Candy Shoes";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card-candy">
+            <div class="card-body p-4 p-lg-5">
+                <!-- Encabezado -->
+                <div class="text-center mb-4">
+                    <div class="bg-candy-light rounded-circle d-inline-flex p-3 mb-3" style="background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%) !important;">
+                        <i class="fas fa-times-circle text-white" style="font-size: 2rem;"></i>
+                    </div>
+                    <h2 class="fw-bold text-danger">Cancelar Pedido</h2>
+                    <p class="text-danger">⚠️ Esta acción no se puede deshacer</p>
+                </div>
+
+                <!-- Resumen del pedido -->
+                <div class="bg-light rounded-3 p-3 mb-4">
+                    <div class="row">
+                        <div class="col-6">
+                            <span class="text-muted">Pedido:</span>
+                            <span class="fw-bold">#@Model.Id</span>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted">Total:</span>
+                            <span class="fw-bold text-candy-primary">@Model.Total.ToString("C")</span>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <span class="text-muted">Cliente:</span>
+                            <span>@Model.Usuario?.Nombre</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="text-muted">Estado actual:</span>
+                            <span class="badge @(Model.Estado.ToString() switch
+                                  {
+                                      "Confirmado" => "bg-success",
+                                      "Entregado" => "bg-primary",
+                                      "Cancelado" => "bg-danger",
+                                      "Enviado" => "bg-info",
+                                      "Pendiente" => "bg-warning text-dark",
+                                      _ => "bg-secondary"
+                                  }) rounded-pill px-3 py-2">
+                                @Model.Estado
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning rounded-3 border-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>¿Estás seguro?</strong> Al cancelar este pedido, el stock de los productos será restaurado automáticamente.
+                </div>
+
+                <form asp-action="Cancelar">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a asp-action="MisCompras" class="btn btn-candy-outline px-4">
+                            <i class="fas fa-times-circle me-1"></i>No, volver
+                        </a>
+                        <button type="submit" class="btn btn-danger px-4">
+                            <i class="fas fa-trash-alt me-2"></i>Sí, cancelar pedido
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

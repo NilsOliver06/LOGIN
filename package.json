@@ -1,0 +1,8 @@
+{
+    "name": "candy-shoes",
+    "version": "1.0.0",
+    "scripts": {
+        "build": "dotnet publish -c Release -o out",
+        "start": "dotnet out/LOGIN.dll"
+    }
+}

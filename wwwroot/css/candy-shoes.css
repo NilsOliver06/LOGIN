@@ -1,0 +1,309 @@
+﻿/* candy-shoes.css - Estilos Candy Shoes */
+
+:root {
+    --candy-primary: #FF6B6B;
+    --candy-secondary: #4ECDC4;
+    --candy-accent: #FFE66D;
+    --candy-dark: #2C3E50;
+    --candy-light: #FFF8F0;
+    --candy-shadow: 0 8px 30px rgba(255, 107, 107, 0.25);
+}
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: var(--candy-light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== NAVBAR CANDY SHOES ===== */
+.navbar-candy {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 50%, #FECA57 100%) !important;
+    padding: 12px 0;
+    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.3);
+}
+
+    .navbar-candy .navbar-brand {
+        font-weight: 800;
+        font-size: 1.6rem;
+        color: white !important;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        letter-spacing: -0.5px;
+    }
+
+        .navbar-candy .navbar-brand i {
+            font-size: 1.8rem;
+            margin-right: 10px;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-candy .navbar-brand:hover i {
+            transform: rotate(-15deg);
+        }
+
+    .navbar-candy .nav-link {
+        color: rgba(255,255,255,0.9) !important;
+        font-weight: 500;
+        padding: 8px 20px !important;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+
+        .navbar-candy .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .navbar-candy .nav-link i {
+            margin-right: 8px;
+        }
+
+    .navbar-candy .navbar-text {
+        color: rgba(255,255,255,0.95) !important;
+        font-weight: 500;
+    }
+
+        .navbar-candy .navbar-text i {
+            margin-right: 8px;
+        }
+
+/* ===== BADGE CARRITO ===== */
+.cart-badge {
+    background: white;
+    color: #FF6B6B;
+    font-weight: 700;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 50px;
+    margin-left: 5px;
+    border: 2px solid white;
+}
+
+/* ===== BOTONES CANDY ===== */
+.btn-candy {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 50%, #FECA57 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 10px 30px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: var(--candy-shadow);
+}
+
+    .btn-candy:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 12px 40px rgba(255, 107, 107, 0.4);
+        color: white;
+    }
+
+.btn-candy-outline {
+    background: transparent;
+    border: 2px solid #FF6B6B;
+    color: #FF6B6B;
+    font-weight: 600;
+    padding: 8px 25px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+    .btn-candy-outline:hover {
+        background: #FF6B6B;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+/* ===== TARJETAS ===== */
+.card-candy {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+    .card-candy:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(255, 107, 107, 0.15);
+    }
+
+    .card-candy .card-header {
+        background: white;
+        border-bottom: 3px solid #FF6B6B;
+        padding: 20px 25px;
+    }
+
+/* ===== FOOTER ===== */
+.footer-candy {
+    background: #2C3E50;
+    color: rgba(255,255,255,0.7);
+    padding: 30px 0 20px;
+    margin-top: auto;
+}
+
+    .footer-candy a {
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+        .footer-candy a:hover {
+            color: #FFE66D;
+        }
+
+    .footer-candy .social-icons a {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        margin: 0 5px;
+        transition: all 0.3s ease;
+    }
+
+        .footer-candy .social-icons a:hover {
+            background: #FFE66D;
+            color: #2C3E50;
+            transform: translateY(-3px);
+        }
+
+/* ===== UTILIDADES ===== */
+.text-candy-primary {
+    color: #FF6B6B;
+}
+
+.text-candy-secondary {
+    color: #4ECDC4;
+}
+
+.bg-candy-light {
+    background: #FFF8F0;
+}
+
+.section-title {
+    font-weight: 700;
+    position: relative;
+    display: inline-block;
+}
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 50%, #FECA57 100%);
+        border-radius: 10px;
+    }
+
+    .section-title.text-center::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .navbar-candy .navbar-brand {
+        font-size: 1.2rem;
+    }
+
+    .navbar-candy .nav-link {
+        padding: 8px 15px !important;
+    }
+
+    .footer-candy .text-md-end,
+    .footer-candy .text-md-start {
+        text-align: center !important;
+    }
+
+    .footer-candy .social-icons {
+        margin: 15px 0;
+    }
+}
+/* ===== ESTILOS DE TIENDA (Vitrina) ===== */
+
+.producto-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+    .producto-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(255, 107, 107, 0.15);
+    }
+
+.producto-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    z-index: 10;
+    color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.bg-candy-primary {
+    background: #FF6B6B;
+    color: white;
+}
+
+.producto-card .card-img-top {
+    background: linear-gradient(135deg, #FFF8F0 0%, #FFE8D6 100%);
+    padding: 20px 0 !important;
+    border-bottom: 3px solid #FF6B6B;
+}
+
+.producto-card .card-footer {
+    background: white !important;
+    border-top: 1px solid #f0f0f0 !important;
+}
+
+.producto-card .btn-candy {
+    padding: 6px 18px;
+    font-size: 0.85rem;
+}
+
+/* ===== NOTIFICACIÓN FLOTANTE ===== */
+
+.notificacion-flotante {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    box-shadow: 0 8px 30px rgba(255, 107, 107, 0.4);
+    z-index: 9999;
+    font-weight: 500;
+    animation: slideUp 0.5s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+@keyframes slideUp {
+    0% {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

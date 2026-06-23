@@ -1,56 +1,131 @@
 ﻿@{
-    ViewData["Title"] = "Checkout";
+    ViewData["Title"] = "Checkout - Candy Shoes";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card card-modern">
-                <div class="card-header bg-white border-bottom-0 pt-4">
-                    <h2 class="h3 fw-bold">
-                        <i class="bi bi-credit-card text-success"></i> Finalizar Compra
-                    </h2>
-                    <p class="text-muted">Completa los datos para tu pedido</p>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card-candy">
+            <div class="card-body p-4 p-lg-5">
+                <!-- Encabezado -->
+                <div class="text-center mb-4">
+                    <div class="bg-candy-light rounded-circle d-inline-flex p-3 mb-3" style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%) !important;">
+                        <i class="fas fa-credit-card text-white" style="font-size: 2rem;"></i>
+                    </div>
+                    <h2 class="fw-bold">Finalizar Compra</h2>
+                    <p class="text-muted">Completa los datos para tu pedido en Candy Shoes</p>
                 </div>
-                <div class="card-body p-4">
-                    <form asp-action="ConfirmarPedido" method="post">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">
-                                <i class="bi bi-geo-alt"></i> Dirección de envío *
-                            </label>
-                            <input type="text" name="direccion" class="form-control input-modern"
-                                   placeholder="Calle, número, ciudad, código postal" required />
+
+                <form asp-action="ConfirmarPedido" method="post" id="checkoutForm">
+                    <div class="row g-4">
+                        <!-- Columna izquierda: Datos del pedido -->
+                        <div class="col-md-7">
+                            <div class="card border-0 shadow-sm rounded-4">
+                                <div class="card-body p-4">
+                                    <h5 class="fw-bold mb-3">
+                                        <i class="fas fa-truck text-candy-primary me-2"></i>Datos de Envío
+                                    </h5>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">
+                                            <i class="fas fa-map-pin text-candy-primary me-1"></i>Dirección de envío *
+                                        </label>
+                                        <input type="text" name="direccion" class="form-control form-control-lg rounded-3"
+                                               placeholder="Calle, número, ciudad, código postal" required />
+                                        <div class="form-text">Ingresa la dirección donde deseas recibir tu pedido</div>
+                                    </div>
+
+                                    <h5 class="fw-bold mt-4 mb-3">
+                                        <i class="fas fa-wallet text-candy-primary me-2"></i>Método de Pago
+                                    </h5>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">
+                                            <i class="fas fa-credit-card text-candy-primary me-1"></i>Selecciona un método *
+                                        </label>
+                                        <select name="metodoPago" class="form-select form-select-lg rounded-3" required>
+                                            <option value="">🔽 Selecciona un método</option>
+                                            <option value="Tarjeta Crédito/Débito">💳 Tarjeta Crédito/Débito</option>
+                                            <option value="Transferencia Bancaria">🏦 Transferencia Bancaria</option>
+                                            <option value="Pago contra entrega">🚚 Pago contra entrega</option>
+                                            <option value="Yape/Plin">📱 Yape / Plin</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Campos de tarjeta (visuales, solo decorativos) -->
+                                    <div class="bg-light rounded-3 p-3 mt-3">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <i class="fas fa-credit-card" style="font-size: 1.5rem; color: #FF6B6B;"></i>
+                                            <div>
+                                                <small class="text-muted d-block">Aceptamos todos los medios de pago</small>
+                                                <div class="d-flex gap-2 mt-1">
+                                                    <span class="badge bg-dark">Visa</span>
+                                                    <span class="badge bg-dark">Mastercard</span>
+                                                    <span class="badge bg-dark">Yape</span>
+                                                    <span class="badge bg-dark">Plin</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">
-                                <i class="bi bi-wallet2"></i> Método de pago *
-                            </label>
-                            <select name="metodoPago" class="form-select input-modern" required>
-                                <option value="">Selecciona un método</option>
-                                <option value="Tarjeta Crédito/Débito">💳 Tarjeta Crédito/Débito</option>
-                                <option value="Transferencia Bancaria">🏦 Transferencia Bancaria</option>
-                                <option value="Pago contra entrega">🚚 Pago contra entrega</option>
-                                <option value="Yape/Plin">📱 Yape / Plin</option>
-                            </select>
-                        </div>
+                        <!-- Columna derecha: Resumen del pedido -->
+                        <div class="col-md-5">
+                            <div class="card border-0 shadow-sm rounded-4">
+                                <div class="card-body p-4">
+                                    <h5 class="fw-bold mb-3">
+                                        <i class="fas fa-receipt text-candy-primary me-2"></i>Resumen del Pedido
+                                    </h5>
 
-                        <div class="alert alert-info rounded-3 mt-3">
-                            <i class="bi bi-info-circle"></i>
-                            <strong>Total a pagar:</strong> <span class="fs-4 fw-bold">@ViewBag.Total.ToString("C")</span>
-                        </div>
+                                    <div class="bg-candy-light rounded-3 p-3 mb-3">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-muted">Subtotal</span>
+                                            <span class="fw-bold">@ViewBag.Total.ToString("C")</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-muted">Envío</span>
+                                            <span class="fw-bold text-success">¡Gratis!</span>
+                                        </div>
+                                        <hr />
+                                        <div class="d-flex justify-content-between">
+                                            <span class="fw-bold fs-5">Total</span>
+                                            <span class="fw-bold fs-4 text-candy-primary">@ViewBag.Total.ToString("C")</span>
+                                        </div>
+                                    </div>
 
-                        <div class="d-flex gap-2 justify-content-end mt-4">
-                            <a asp-action="Carrito" class="btn btn-light rounded-pill px-4">
-                                <i class="bi bi-arrow-left"></i> Volver
-                            </a>
-                            <button type="submit" class="btn btn-gradient rounded-pill px-4">
-                                <i class="bi bi-check-circle"></i> Confirmar Pedido
-                            </button>
+                                    <div class="alert alert-info rounded-3 border-0">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <small>Tu pedido será confirmado y recibirás un correo con los detalles</small>
+                                    </div>
+
+                                    <div class="d-flex gap-2 mt-3">
+                                        <a asp-action="Carrito" class="btn btn-candy-outline flex-grow-1">
+                                            <i class="fas fa-arrow-left me-1"></i>Volver
+                                        </a>
+                                        <button type="submit" class="btn btn-candy flex-grow-1" id="btnConfirmar">
+                                            <i class="fas fa-check-circle me-2"></i>Confirmar Pedido
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Script para prevenir envíos dobles -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+    $('#checkoutForm').on('submit', function() {
+    var btn = $('#btnConfirmar');
+    btn.prop('disabled', true)
+    .html('<i class="fas fa-spinner fa-spin me-2"></i>Procesando...');
+    return true;
+    });
+    });
+</script>

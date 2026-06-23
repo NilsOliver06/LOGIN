@@ -1,62 +1,85 @@
 ﻿@model LOGIN.Models.Producto
 
 @{
-    ViewData["Title"] = "Detalles";
+    ViewData["Title"] = "Detalles - Candy Shoes";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card card-custom">
-                <div class="card-header bg-white border-bottom-0 pt-4">
-                    <div class="text-center">
-                        <i class="bi bi-info-circle-fill fs-1" style="color: #3b82f6;"></i>
-                        <h2 class="h3 mt-2 fw-bold">Detalles del Producto</h2>
-                        <p class="text-muted small">Información completa</p>
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card-candy">
+            <div class="card-body p-4 p-lg-5">
+                <!-- Encabezado -->
+                <div class="text-center mb-4">
+                    <div class="bg-candy-light rounded-circle d-inline-flex p-3 mb-3" style="background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%) !important;">
+                        <i class="fas fa-info-circle text-white" style="font-size: 2rem;"></i>
+                    </div>
+                    <h2 class="fw-bold">Detalles del Producto</h2>
+                    <p class="text-muted">Información completa del producto #@Model.Id</p>
+                </div>
+
+                <!-- Imagen decorativa -->
+                <div class="text-center mb-4">
+                    <div class="bg-candy-light rounded-4 p-4 d-inline-block" style="background: linear-gradient(135deg, #FFF8F0 0%, #FFE8D6 100%);">
+                        <i class="fas fa-shoe-prints" style="font-size: 5rem; color: #FF6B6B;"></i>
                     </div>
                 </div>
-                <div class="card-body p-4">
-                    <div class="bg-light rounded-3 p-3">
-                        <dl class="row mb-0">
-                            <dt class="col-sm-4 fw-semibold">@Html.DisplayNameFor(model => model.Id)</dt>
-                            <dd class="col-sm-8 text-secondary">#@Html.DisplayFor(model => model.Id)</dd>
 
-                            <dt class="col-sm-4 fw-semibold">@Html.DisplayNameFor(model => model.Nombre)</dt>
-                            <dd class="col-sm-8 fw-semibold">@Html.DisplayFor(model => model.Nombre)</dd>
+                <div class="bg-light rounded-3 p-4">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4 fw-semibold">
+                            <i class="fas fa-hashtag text-candy-primary me-1"></i>ID
+                        </dt>
+                        <dd class="col-sm-8 text-secondary">#@Model.Id</dd>
 
-                            <dt class="col-sm-4 fw-semibold">@Html.DisplayNameFor(model => model.Descripcion)</dt>
-                            <dd class="col-sm-8 text-secondary">@Html.DisplayFor(model => model.Descripcion)</dd>
+                        <dt class="col-sm-4 fw-semibold">
+                            <i class="fas fa-tag text-candy-primary me-1"></i>Nombre
+                        </dt>
+                        <dd class="col-sm-8 fw-semibold">@Model.Nombre</dd>
 
-                            <dt class="col-sm-4 fw-semibold">@Html.DisplayNameFor(model => model.Cantidad)</dt>
-                            <dd class="col-sm-8">
-                                @if (Model.Cantidad == 0)
-                                {
-                                    <span class="badge-stock" style="background: #fee2e2; color: #dc2626;">Sin stock</span>
-                                }
-                                else
-                                {
-                                    <span>@Html.DisplayFor(model => model.Cantidad) unidades</span>
-                                }
-                            </dd>
+                        <dt class="col-sm-4 fw-semibold">
+                            <i class="fas fa-align-left text-candy-primary me-1"></i>Descripción
+                        </dt>
+                        <dd class="col-sm-8 text-secondary">@(Model.Descripcion ?? "Sin descripción")</dd>
 
-                            <dt class="col-sm-4 fw-semibold">@Html.DisplayNameFor(model => model.Precio)</dt>
-                            <dd class="col-sm-8 fs-4 fw-bold" style="color: #667eea;">@Html.DisplayFor(model => model.Precio)</dd>
+                        <dt class="col-sm-4 fw-semibold">
+                            <i class="fas fa-box text-candy-primary me-1"></i>Stock
+                        </dt>
+                        <dd class="col-sm-8">
+                            @if (Model.Cantidad == 0)
+                            {
+                                <span class="badge bg-danger rounded-pill px-3 py-2">Agotado</span>
+                            }
+                            else if (Model.Cantidad < 5)
+                            {
+                                <span class="badge bg-warning text-dark rounded-pill px-3 py-2">@Model.Cantidad unidades (bajo stock)</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success rounded-pill px-3 py-2">@Model.Cantidad unidades</span>
+                            }
+                        </dd>
 
-                            <dt class="col-sm-4 fw-semibold">@Html.DisplayNameFor(model => model.FechaRegistro)</dt>
-                            <dd class="col-sm-8 text-secondary">@Html.DisplayFor(model => model.FechaRegistro)</dd>
-                        </dl>
-                    </div>
+                        <dt class="col-sm-4 fw-semibold">
+                            <i class="fas fa-dollar-sign text-candy-primary me-1"></i>Precio
+                        </dt>
+                        <dd class="col-sm-8 fs-4 fw-bold text-candy-primary">@Model.Precio.ToString("C")</dd>
 
-                    <hr class="my-4" />
+                        <dt class="col-sm-4 fw-semibold">
+                            <i class="fas fa-calendar-alt text-candy-primary me-1"></i>Fecha Registro
+                        </dt>
+                        <dd class="col-sm-8 text-secondary">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</dd>
+                    </dl>
+                </div>
 
-                    <div class="d-flex gap-2 justify-content-center">
-                        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning rounded-pill px-4">
-                            <i class="bi bi-pencil me-1"></i>Editar
-                        </a>
-                        <a asp-action="Index" class="btn btn-light rounded-pill px-4">
-                            <i class="bi bi-arrow-left me-1"></i>Volver
-                        </a>
-                    </div>
+                <hr class="my-4" />
+
+                <div class="d-flex gap-2 justify-content-center">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning px-4" style="color: white;">
+                        <i class="fas fa-pencil-alt me-2"></i>Editar
+                    </a>
+                    <a asp-action="Index" class="btn btn-candy-outline px-4">
+                        <i class="fas fa-arrow-left me-1"></i>Volver
+                    </a>
                 </div>
             </div>
         </div>
