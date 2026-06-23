@@ -1,18 +1,15 @@
 ﻿{
-  "version": 2,
-  "builds": [
-    {
-      "src": "Program.cs",
-      "use": "@vercel/dotnet"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/"
-    }
-  ],
-  "env": {
-    "DATABASE_URL": "Host=db.avfipojrolfcyvzqiwru.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=2221960443nils;SSL Mode=Require;Trust Server Certificate=true;"
-  }
+    "version": 2,
+    "builds": [
+        {
+            "src": "Program.cs",
+            "use": "@vercel/dotnet"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/"
+        }
+    ]
 }
