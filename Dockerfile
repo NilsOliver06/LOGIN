@@ -1,28 +1,29 @@
 # ============================================================
-# 🍬👟 CANDY SHOES - DOCKERFILE PARA RENDER (.NET 10)
+# 🍬👟 CANDY SHOES - DOCKERFILE CON DNS FORZADO
 # ============================================================
-# Usa .NET 10 SDK para compilar
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
-# Copiar archivo de proyecto y restaurar dependencias
+# 🔥 CONFIGURAR DNS PARA RESOLVER SUPABASE
+RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf
+RUN echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+
 COPY *.csproj .
 RUN dotnet restore
 
-# Copiar todo el código y compilar
 COPY . .
 RUN dotnet publish -c Release -o out
 
-# ============================================================
-# Imagen final para ejecutar la aplicación
-# ============================================================
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
+
+# 🔥 CONFIGURAR DNS EN LA IMAGEN FINAL
+RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf
+RUN echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+
 COPY --from=build /app/out .
 
-# Puerto que usará Render
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 
-# Comando para iniciar la aplicación
 ENTRYPOINT ["dotnet", "LOGIN.dll"]
