@@ -1,27 +1,31 @@
 using Microsoft.EntityFrameworkCore;
 using LOGIN.Data;
-using DotNetEnv;  // 👈 Para leer .env
+using System.Net;
 
-// Cargar variables de entorno desde .env
-Env.Load();
+// ============================================================
+// 🔥 FORZAR IPv4 PARA SUPABASE
+// ============================================================
+ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+// Forzar que todas las conexiones usen IPv4
+AppContext.SetSwitch("System.Net.DisableIPv6", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ============================================================
-// CONFIGURACIÓN DE BASE DE DATOS - SUPABASE (POSTGRESQL)
+// CONFIGURACIÓN DE BASE DE DATOS - SUPABASE
 // ============================================================
 
-// 📌 Leer connection string de variable de entorno o appsettings
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
-                       ?? builder.Configuration.GetConnectionString("DefaultConnection");
+// Leer connection string de variable de entorno o appsettings
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-Console.WriteLine($"🔗 Usando conexión: {(Environment.GetEnvironmentVariable("DATABASE_URL") != null ? "🌍 Variable de entorno" : "📁 appsettings.json")}");
+Console.WriteLine("🔗 Intentando conectar a Supabase...");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString, npgsqlOptions =>
     {
         npgsqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 3,
+            maxRetryCount: 5,
             maxRetryDelay: TimeSpan.FromSeconds(30),
             errorCodesToAdd: null);
     }));
@@ -33,7 +37,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
-// Configuración de Session
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -41,6 +44,10 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+// ============================================================
+// CONFIGURACIÓN DE LA APLICACIÓN
+// ============================================================
 
 var app = builder.Build();
 
@@ -61,10 +68,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// ============================================================
-// MIDDLEWARE
-// ============================================================
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -77,10 +80,6 @@ app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
 
-// ============================================================
-// RUTAS
-// ============================================================
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
@@ -91,6 +90,6 @@ app.MapControllers();
 // INICIAR APLICACIÓN
 // ============================================================
 
-// 📌 Puerto dinámico para Vercel
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+Console.WriteLine($"🚀 Iniciando en puerto: {port}");
 app.Run($"http://*:{port}");
