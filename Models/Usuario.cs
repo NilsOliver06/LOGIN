@@ -33,5 +33,8 @@ namespace LOGIN.Models
         public string? Ciudad { get; set; }
 
         public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;
+
+        // 👇 NUEVO: Rol del usuario
+        public string? Rol { get; set; } = "Usuario"; // "Admin" o "Usuario"
     }
 }

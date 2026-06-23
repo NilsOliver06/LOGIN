@@ -1,13 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using LOGIN.Data;
+using LOGIN.Models;
 using System.Net;
 
 // ============================================================
 // 🔥 FORZAR IPv4 PARA SUPABASE
 // ============================================================
 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-// Forzar que todas las conexiones usen IPv4
 AppContext.SetSwitch("System.Net.DisableIPv6", true);
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +36,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
+// Configuración de Session
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -57,8 +57,10 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
     try
     {
+        // Aplicar migraciones
         dbContext.Database.Migrate();
         Console.WriteLine("✅ Migraciones aplicadas correctamente");
     }
@@ -67,6 +69,52 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"❌ Error al aplicar migraciones: {ex.Message}");
     }
 }
+
+// ============================================================
+// 👑 CREAR ADMINISTRADOR POR DEFECTO
+// ============================================================
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    try
+    {
+        var adminEmail = "admin@candyshoes.pe";
+        var adminExists = dbContext.Usuarios.Any(u => u.Email == adminEmail);
+
+        if (!adminExists)
+        {
+            var admin = new Usuario
+            {
+                Nombre = "Administrador",
+                Email = adminEmail,
+                Password = "Admin123!",
+                Edad = 30,
+                Ciudad = "Lima",
+                Rol = "Admin",
+                FechaRegistro = DateTime.UtcNow
+            };
+
+            dbContext.Usuarios.Add(admin);
+            dbContext.SaveChanges();
+            Console.WriteLine("✅ Administrador creado correctamente");
+            Console.WriteLine($"   Email: {adminEmail}");
+            Console.WriteLine($"   Contraseña: Admin123!");
+        }
+        else
+        {
+            Console.WriteLine("ℹ️ Administrador ya existe");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"⚠️ Error al crear administrador: {ex.Message}");
+    }
+}
+
+// ============================================================
+// MIDDLEWARE
+// ============================================================
 
 if (!app.Environment.IsDevelopment())
 {
@@ -79,6 +127,10 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
+
+// ============================================================
+// RUTAS
+// ============================================================
 
 app.MapControllerRoute(
     name: "default",

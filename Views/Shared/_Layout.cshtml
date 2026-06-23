@@ -71,6 +71,20 @@
                                 </li>
                             }
                         }
+                        @if (!string.IsNullOrEmpty(Context.Session.GetString("UsuarioId")))
+                        {
+                            var nombre = Context.Session.GetString("UsuarioNombre");
+                            var rol = Context.Session.GetString("UsuarioRol");
+
+                            <span class="navbar-text text-white-50">
+                                <i class="fas fa-user-circle me-1"></i>
+                                @nombre
+                                @if (rol == "Admin")
+                                {
+                                    <span class="badge bg-danger ms-1">Admin</span>
+                                }
+                            </span>
+                        }
                         <!-- Dentro del <ul class="navbar-nav me-auto"> después de "Usuarios" -->
                         @if (!string.IsNullOrEmpty(Context.Session.GetString("UsuarioId")))
                         {

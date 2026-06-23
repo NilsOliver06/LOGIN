@@ -41,6 +41,13 @@ namespace LOGIN.Controllers
                     HttpContext.Session.SetString("UsuarioId", usuario.Id.ToString());
                     HttpContext.Session.SetString("UsuarioNombre", usuario.Nombre ?? "");
                     HttpContext.Session.SetString("UsuarioEmail", usuario.Email ?? "");
+                    HttpContext.Session.SetString("UsuarioRol", usuario.Rol ?? "Usuario"); // 👈 NUEVO
+
+                    // Si es Admin, redirigir a inventario
+                    if (usuario.Rol == "Admin")
+                    {
+                        return RedirectToAction("Index", "ProductosView");
+                    }
 
                     return RedirectToAction("Index", "Home");
                 }
