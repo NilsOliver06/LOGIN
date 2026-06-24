@@ -76,7 +76,7 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     // Ignorar peticiones que no son GET
     if (event.request.method !== 'GET') {
-        return;
+        return;f
     }
 
     // IGNORAR PETICIONES DE ICONOS
@@ -93,7 +93,9 @@ self.addEventListener('fetch', event => {
     if (event.request.url.includes('supabase')) {
         return;
     }
-
+    if (event.request.url.includes('/manifest.json')) {
+        return;
+    }
     event.respondWith(
         // Estrategia: Network First (con fallback a cache)
         fetch(event.request)
