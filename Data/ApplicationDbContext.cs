@@ -54,6 +54,7 @@ namespace LOGIN.Data
 
                 entity.Property(e => e.FechaRegistro)
                     .HasDefaultValueSql("CURRENT_TIMESTAMP"); // GETDATE() en PostgreSQL
+                entity.Property(e => e.Rol).HasMaxLength(20).HasDefaultValue("Usuario");
             });
 
             // ============================================================

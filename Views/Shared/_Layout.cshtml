@@ -216,6 +216,20 @@
             setTimeout(actualizarContadorCarrito, 500);
         });
     </script>
+    <script>
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/service-worker.js')
+        .then(function(registration) {
+        console.log('✅ Service Worker registrado correctamente');
+        })
+        .catch(function(error) {
+        console.log('❌ Error al registrar Service Worker:', error);
+        });
+        });
+        }
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
