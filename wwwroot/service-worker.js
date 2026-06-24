@@ -14,6 +14,10 @@ const STATIC_FILES = [
     '/Account/Login',
     '/css/candy-shoes.css',
     '/manifest.json',
+    // Iconos
+    '/icons/icon-192x192.png',
+    '/icons/icon-512x512.png',
+    // Recursos externos
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',
     'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap',
@@ -72,6 +76,11 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     // Ignorar peticiones que no son GET
     if (event.request.method !== 'GET') {
+        return;
+    }
+
+    // IGNORAR PETICIONES DE ICONOS
+    if (event.request.url.includes('/icons/')) {
         return;
     }
 

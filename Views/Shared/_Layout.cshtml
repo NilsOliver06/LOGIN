@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Candy Shoes 🍬👟</title>
 
+    <!-- ===== PWA META TAGS ===== -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FF6B6B">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Candy Shoes">
+
     <!-- Bootstrap 5.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
@@ -17,7 +24,7 @@
     <!-- Estilos personalizados Candy Shoes -->
     <link rel="stylesheet" href="~/css/candy-shoes.css" asp-append-version="true" />
 
-    <!-- Estilos adicionales si necesitas (opcional) -->
+    <!-- Estilos adicionales -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
@@ -58,7 +65,7 @@
                                 </a>
                             </li>
                         }
-                        <!-- Dentro del <ul class="navbar-nav me-auto"> -->
+
                         @if (!string.IsNullOrEmpty(Context.Session.GetString("UsuarioId")))
                         {
                             var email = Context.Session.GetString("UsuarioEmail");
@@ -66,34 +73,12 @@
                             {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="Account" asp-action="Index">
-                                        <i class="fas fa-users me-1"></i>Usuarios
+                                        <i class="fas fa-users me-1"></i> Usuarios
                                     </a>
                                 </li>
-                            }
-                        }
-                        @if (!string.IsNullOrEmpty(Context.Session.GetString("UsuarioId")))
-                        {
-                            var nombre = Context.Session.GetString("UsuarioNombre");
-                            var rol = Context.Session.GetString("UsuarioRol");
-
-                            <span class="navbar-text text-white-50">
-                                <i class="fas fa-user-circle me-1"></i>
-                                @nombre
-                                @if (rol == "Admin")
-                                {
-                                    <span class="badge bg-danger ms-1">Admin</span>
-                                }
-                            </span>
-                        }
-                        <!-- Dentro del <ul class="navbar-nav me-auto"> después de "Usuarios" -->
-                        @if (!string.IsNullOrEmpty(Context.Session.GetString("UsuarioId")))
-                        {
-                            var email = Context.Session.GetString("UsuarioEmail");
-                            if (email == "admin@candyshoes.pe")
-                            {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="Tienda" asp-action="AdminPedidos">
-                                        <i class="fas fa-clipboard-list me-1"></i>Pedidos
+                                        <i class="fas fa-clipboard-list me-1"></i> Pedidos
                                     </a>
                                 </li>
                             }
@@ -124,19 +109,23 @@
                                 </a>
                             </li>
 
-                            <!-- Usuario -->
+                            <!-- Nombre + Perfil -->
                             <li class="nav-item">
                                 <span class="navbar-text">
                                     <i class="fas fa-user-circle"></i>
                                     @Context.Session.GetString("UsuarioNombre")
+                                    @if (Context.Session.GetString("UsuarioRol") == "Admin")
+                                    {
+                                        <span class="badge bg-danger ms-1">Admin</span>
+                                    }
                                 </span>
                             </li>
-                            <!-- Dentro del <ul class="navbar-nav"> después del nombre del usuario -->
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Account" asp-action="Edit" asp-route-id="@(Context.Session.GetString("UsuarioId"))">
-                                    <i class="fas fa-user-edit me-1"></i>Mi Perfil
+                                    <i class="fas fa-user-edit me-1"></i> Mi Perfil
                                 </a>
                             </li>
+
                             <!-- Cerrar Sesión -->
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Account" asp-action="Logout">
@@ -206,18 +195,18 @@
     <!-- Script para actualizar contador del carrito vía AJAX -->
     <script>
         function actualizarContadorCarrito() {
-            $.get('/Tienda/GetCarritoCount', function(data) {
-                $('#cartCount').text(data.count);
-            });
+        $.get('/Tienda/GetCarritoCount', function(data) {
+        $('#cartCount').text(data.count);
+        });
         }
 
-        // Escuchar eventos de agregar al carrito
         $(document).on('click', '.add-to-cart', function() {
-            setTimeout(actualizarContadorCarrito, 500);
+        setTimeout(actualizarContadorCarrito, 500);
         });
     </script>
+
+    <!-- ===== PWA - REGISTRO SERVICE WORKER ===== -->
     <script>
-        // Registrar Service Worker
         if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
         navigator.serviceWorker.register('/service-worker.js')
