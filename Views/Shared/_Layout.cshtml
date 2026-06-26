@@ -41,6 +41,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCandy">
                     <ul class="navbar-nav me-auto">
+                        <!-- INICIO - Visible para todos -->
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Index">
                                 <i class="fas fa-home"></i> Inicio
@@ -49,28 +50,31 @@
 
                         @if (!string.IsNullOrEmpty(Context.Session.GetString("UsuarioId")))
                         {
+                            <!-- TIENDA - Visible para todos los logueados -->
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Tienda" asp-action="Index">
                                     <i class="fas fa-store"></i> Tienda
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="ProductosView" asp-action="Index">
-                                    <i class="fas fa-boxes"></i> Inventario
-                                </a>
-                            </li>
+
+                            <!-- MIS COMPRAS - Visible para todos los logueados -->
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Tienda" asp-action="MisCompras">
                                     <i class="fas fa-receipt"></i> Mis Compras
                                 </a>
                             </li>
-                        }
 
-                        @if (!string.IsNullOrEmpty(Context.Session.GetString("UsuarioId")))
-                        {
-                            var email = Context.Session.GetString("UsuarioEmail");
-                            if (email == "admin@candyshoes.pe")
+                            <!-- ============================================================ -->
+                            <!-- 👇 SECCIÓN ADMIN - SOLO VISIBLE PARA ADMINISTRADORES -->
+                            <!-- ============================================================ -->
+                            var rol = Context.Session.GetString("UsuarioRol");
+                            if (rol == "Admin")
                             {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="ProductosView" asp-action="Index">
+                                        <i class="fas fa-boxes"></i> Inventario
+                                    </a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="Account" asp-action="Index">
                                         <i class="fas fa-users me-1"></i> Usuarios
