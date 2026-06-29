@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using LOGIN.Data;
 using LOGIN.Models;
-using OfficeOpenXml;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -50,83 +49,7 @@ namespace LOGIN.Controllers
         }
 
         // ============================================================
-        // 📄 REPORTE DE VENTAS - EXCEL
-        // ============================================================
-        [HttpGet]
-        public async Task<IActionResult> VentasExcel(DateTime? fechaInicio, DateTime? fechaFin)
-        {
-            try
-            {
-                if (!EsAdmin())
-                    return RedirectToAction("Index", "Home");
-
-                // ✅ SOLUCIÓN AL ERROR: Asignación limpia usando el enum compatible LicenseContext
-                ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-
-                var query = _context.Pedidos
-                    .Include(p => p.Usuario)
-                    .Include(p => p.Detalles!)
-                        .ThenInclude(d => d.Producto)
-                    .AsQueryable();
-
-                if (fechaInicio.HasValue)
-                    query = query.Where(p => p.FechaPedido >= fechaInicio.Value);
-                if (fechaFin.HasValue)
-                    query = query.Where(p => p.FechaPedido <= fechaFin.Value);
-
-                var pedidos = await query.OrderByDescending(p => p.FechaPedido).ToListAsync();
-
-                using var package = new ExcelPackage();
-                var worksheet = package.Workbook.Worksheets.Add("Ventas");
-
-                worksheet.Cells[1, 1].Value = "ID Pedido";
-                worksheet.Cells[1, 2].Value = "Fecha";
-                worksheet.Cells[1, 3].Value = "Cliente";
-                worksheet.Cells[1, 4].Value = "Total";
-                worksheet.Cells[1, 5].Value = "Estado";
-                worksheet.Cells[1, 6].Value = "Método Pago";
-                worksheet.Cells[1, 7].Value = "Productos";
-
-                using var headerRange = worksheet.Cells[1, 1, 1, 7];
-                headerRange.Style.Font.Bold = true;
-                headerRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                headerRange.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
-
-                int row = 2;
-                foreach (var pedido in pedidos)
-                {
-                    worksheet.Cells[row, 1].Value = pedido.Id;
-                    worksheet.Cells[row, 2].Value = pedido.FechaPedido.ToString("dd/MM/yyyy HH:mm");
-                    worksheet.Cells[row, 3].Value = pedido.Usuario?.Nombre ?? "N/A";
-                    worksheet.Cells[row, 4].Value = pedido.Total;
-                    worksheet.Cells[row, 4].Style.Numberformat.Format = "#,##0.00";
-                    worksheet.Cells[row, 5].Value = pedido.Estado.ToString();
-                    worksheet.Cells[row, 6].Value = pedido.MetodoPago ?? "N/A";
-
-                    var productos = string.Join(", ", pedido.Detalles?.Select(d => $"{d.Producto?.Nombre} (x{d.Cantidad})") ?? new List<string>());
-                    worksheet.Cells[row, 7].Value = productos;
-                    row++;
-                }
-
-                worksheet.Cells.AutoFitColumns();
-
-                var stream = new MemoryStream();
-                package.SaveAs(stream);
-                stream.Position = 0;
-
-                var fileName = $"Ventas_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
-                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al generar reporte de ventas en Excel");
-                TempData["Error"] = $"Error: {ex.Message}";
-                return RedirectToAction("Index");
-            }
-        }
-
-        // ============================================================
-        // 📄 REPORTE DE VENTAS - PDF
+        // 📄 REPORTE DE VENTAS - PDF (SINTAXIS CORREGIDA)
         // ============================================================
         [HttpGet]
         public async Task<IActionResult> VentasPdf(DateTime? fechaInicio, DateTime? fechaFin)
@@ -150,54 +73,106 @@ namespace LOGIN.Controllers
                     query = query.Where(p => p.FechaPedido <= fechaFin.Value);
 
                 var pedidos = await query.OrderByDescending(p => p.FechaPedido).ToListAsync();
+                decimal granTotal = pedidos.Sum(p => p.Total);
 
                 var document = Document.Create(container =>
                 {
                     container.Page(page =>
                     {
                         page.Size(PageSizes.A4);
-                        page.Margin(2, Unit.Centimetre);
+                        page.Margin(1.5f, Unit.Centimetre);
                         page.PageColor(Colors.White);
-                        page.DefaultTextStyle(x => x.FontSize(10));
+                        page.DefaultTextStyle(x => x.FontFamily("Helvetica").FontSize(9)); // ✅ Corregido
 
-                        page.Header()
-                            .Text("📊 REPORTE DE VENTAS - CANDY SHOES")
-                            .SemiBold().FontSize(18).FontColor(Colors.Red.Medium);
+                        // ENCABEZADO
+                        page.Header().Column(column =>
+                        {
+                            column.Item().Row(row =>
+                            {
+                                row.RelativeItem().Column(c =>
+                                {
+                                    c.Item().Text("CANDY SHOES").Bold().FontSize(20).FontColor("#D63384");
+                                    c.Item().Text("Reporte Ejecutivo de Ventas").FontSize(11).Italic().FontColor(Colors.Grey.Medium);
+                                });
 
-                        page.Content()
-                            .Table(table =>
+                                row.ConstantItem(150).Column(c =>
+                                {
+                                    c.Item().AlignRight().Text($"Generado: {DateTime.Now:dd/MM/yyyy}").FontSize(9);
+                                    if (fechaInicio.HasValue || fechaFin.HasValue)
+                                    {
+                                        string desde = fechaInicio.HasValue ? fechaInicio.Value.ToString("dd/MM/yyyy") : "Inicio";
+                                        string hasta = fechaFin.HasValue ? fechaFin.Value.ToString("dd/MM/yyyy") : "Hoy";
+                                        c.Item().AlignRight().Text($"Filtro: {desde} - {hasta}").FontSize(8).FontColor(Colors.Grey.Darken1);
+                                    }
+                                });
+                            });
+
+                            column.Item().PaddingTop(5).PaddingBottom(15).LineHorizontal(1).LineColor("#D63384");
+                        });
+
+                        // CONTENIDO
+                        page.Content().PaddingTop(10).Column(column =>
+                        {
+                            column.Item().Table(table =>
                             {
                                 table.ColumnsDefinition(columns =>
                                 {
-                                    columns.RelativeColumn(1);
+                                    columns.ConstantColumn(40);
                                     columns.RelativeColumn(2);
+                                    columns.RelativeColumn(3);
                                     columns.RelativeColumn(2);
-                                    columns.RelativeColumn(1);
                                     columns.RelativeColumn(2);
                                 });
 
+                                // Cabecera de la Tabla
                                 table.Header(header =>
                                 {
-                                    header.Cell().Text("ID").Bold();
-                                    header.Cell().Text("Fecha").Bold();
-                                    header.Cell().Text("Cliente").Bold();
-                                    header.Cell().Text("Total").Bold();
-                                    header.Cell().Text("Estado").Bold();
+                                    header.Cell().Background("#D63384").Padding(6).Text("ID").Bold().FontColor(Colors.White);
+                                    header.Cell().Background("#D63384").Padding(6).Text("Fecha").Bold().FontColor(Colors.White);
+                                    header.Cell().Background("#D63384").Padding(6).Text("Cliente").Bold().FontColor(Colors.White);
+                                    header.Cell().Background("#D63384").Padding(6).Text("Estado").Bold().FontColor(Colors.White);
+                                    header.Cell().Background("#D63384").Padding(6).AlignRight().Text("Total").Bold().FontColor(Colors.White);
                                 });
 
+                                // Filas de la Tabla
+                                bool alternarFila = false;
                                 foreach (var pedido in pedidos)
                                 {
-                                    table.Cell().Text(pedido.Id.ToString());
-                                    table.Cell().Text(pedido.FechaPedido.ToString("dd/MM/yyyy"));
-                                    table.Cell().Text(pedido.Usuario?.Nombre ?? "N/A");
-                                    table.Cell().Text($"S/ {pedido.Total:F2}");
-                                    table.Cell().Text(pedido.Estado.ToString());
+                                    // ✅ Corregido: Usando solo Colors para evitar error CS0172
+                                    var fondoFila = alternarFila ? Colors.Grey.Lighten4 : Colors.White;
+
+                                    table.Cell().Background(fondoFila).Padding(6).Text(pedido.Id.ToString());
+                                    table.Cell().Background(fondoFila).Padding(6).Text(pedido.FechaPedido.ToString("dd/MM/yyyy HH:mm"));
+                                    table.Cell().Background(fondoFila).Padding(6).Text(pedido.Usuario?.Nombre ?? "N/A");
+                                    table.Cell().Background(fondoFila).Padding(6).Text(pedido.Estado.ToString());
+                                    table.Cell().Background(fondoFila).Padding(6).AlignRight().Text($"Bs. {pedido.Total:N2}");
+
+                                    alternarFila = !alternarFila;
                                 }
                             });
 
-                        page.Footer()
-                            .AlignCenter()
-                            .Text($"Generado el {DateTime.Now:dd/MM/yyyy HH:mm} - Candy Shoes");
+                            // Cuadro de Resumen totalizador al final
+                            column.Item().AlignRight().PaddingTop(15).Width(150).Background(Colors.Grey.Lighten4).Padding(8).Row(r =>
+                            {
+                                r.RelativeItem().Text("GRAN TOTAL:").Bold().FontSize(10);
+                                r.RelativeItem().AlignRight().Text($"Bs. {granTotal:N2}").Bold().FontSize(10).FontColor("#D63384");
+                            });
+                        });
+
+                        // PIE DE PÁGINA
+                        page.Footer().Column(c =>
+                        {
+                            c.Item().LineHorizontal(0.5f).LineColor(Colors.Grey.Lighten1);
+                            c.Item().PaddingTop(5).Row(row =>
+                            {
+                                row.RelativeItem().Text("Candy Shoes - Sistema de Gestión Interna").FontColor(Colors.Grey.Medium).FontSize(8);
+                                // ✅ Corregido: Sintaxis clásica para números de página en QuestPDF
+                                row.RelativeItem().AlignRight().Text(t => {
+                                    t.Span("Pág. ");
+                                    t.CurrentPageNumber();
+                                });
+                            });
+                        });
                     });
                 });
 
@@ -205,8 +180,7 @@ namespace LOGIN.Controllers
                 document.GeneratePdf(stream);
                 stream.Position = 0;
 
-                var fileName = $"Ventas_{DateTime.Now:yyyyMMddHHmmss}.pdf";
-                return File(stream, "application/pdf", fileName);
+                return File(stream, "application/pdf", $"Ventas_{DateTime.Now:yyyyMMdd}.pdf");
             }
             catch (Exception ex)
             {
@@ -217,68 +191,7 @@ namespace LOGIN.Controllers
         }
 
         // ============================================================
-        // 📄 REPORTE DE PRODUCTOS - EXCEL
-        // ============================================================
-        [HttpGet]
-        public async Task<IActionResult> ProductosExcel()
-        {
-            try
-            {
-                if (!EsAdmin())
-                    return RedirectToAction("Index", "Home");
-
-                // ✅ SOLUCIÓN AL ERROR: Asignación limpia usando el enum compatible LicenseContext
-                ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-
-                var productos = await _context.Productos.OrderBy(p => p.Nombre).ToListAsync();
-
-                using var package = new ExcelPackage();
-                var worksheet = package.Workbook.Worksheets.Add("Productos");
-
-                worksheet.Cells[1, 1].Value = "ID";
-                worksheet.Cells[1, 2].Value = "Nombre";
-                worksheet.Cells[1, 3].Value = "Descripción";
-                worksheet.Cells[1, 4].Value = "Cantidad";
-                worksheet.Cells[1, 5].Value = "Precio";
-                worksheet.Cells[1, 6].Value = "Fecha Registro";
-
-                using var headerRange = worksheet.Cells[1, 1, 1, 6];
-                headerRange.Style.Font.Bold = true;
-                headerRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                headerRange.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
-
-                int row = 2;
-                foreach (var producto in productos)
-                {
-                    worksheet.Cells[row, 1].Value = producto.Id;
-                    worksheet.Cells[row, 2].Value = producto.Nombre;
-                    worksheet.Cells[row, 3].Value = producto.Descripcion ?? "";
-                    worksheet.Cells[row, 4].Value = producto.Cantidad;
-                    worksheet.Cells[row, 5].Value = producto.Precio;
-                    worksheet.Cells[row, 5].Style.Numberformat.Format = "#,##0.00";
-                    worksheet.Cells[row, 6].Value = producto.FechaRegistro.ToString("dd/MM/yyyy");
-                    row++;
-                }
-
-                worksheet.Cells.AutoFitColumns();
-
-                var stream = new MemoryStream();
-                package.SaveAs(stream);
-                stream.Position = 0;
-
-                var fileName = $"Productos_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
-                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al generar reporte de productos en Excel");
-                TempData["Error"] = $"Error: {ex.Message}";
-                return RedirectToAction("Index");
-            }
-        }
-
-        // ============================================================
-        // 📄 REPORTE DE PRODUCTOS - PDF
+        // 📄 REPORTE DE PRODUCTOS - PDF (SINTAXIS CORREGIDA)
         // ============================================================
         [HttpGet]
         public async Task<IActionResult> ProductosPdf()
@@ -291,51 +204,100 @@ namespace LOGIN.Controllers
                 QuestPDF.Settings.License = LicenseType.Community;
 
                 var productos = await _context.Productos.OrderBy(p => p.Nombre).ToListAsync();
+                int totalItems = productos.Sum(p => p.Cantidad);
 
                 var document = Document.Create(container =>
                 {
                     container.Page(page =>
                     {
                         page.Size(PageSizes.A4);
-                        page.Margin(2, Unit.Centimetre);
+                        page.Margin(1.5f, Unit.Centimetre);
                         page.PageColor(Colors.White);
-                        page.DefaultTextStyle(x => x.FontSize(10));
+                        page.DefaultTextStyle(x => x.FontFamily("Helvetica").FontSize(9)); // ✅ Corregido
 
-                        page.Header()
-                            .Text("📦 REPORTE DE PRODUCTOS - CANDY SHOES")
-                            .SemiBold().FontSize(18).FontColor(Colors.Blue.Medium);
+                        // ENCABEZADO
+                        page.Header().Column(column =>
+                        {
+                            column.Item().Row(row =>
+                            {
+                                row.RelativeItem().Column(c =>
+                                {
+                                    c.Item().Text("CANDY SHOES").Bold().FontSize(20).FontColor("#0D6EFD");
+                                    c.Item().Text("Reporte de Inventario y Almacén").FontSize(11).Italic().FontColor(Colors.Grey.Medium);
+                                });
 
-                        page.Content()
-                            .Table(table =>
+                                row.ConstantItem(120).AlignRight().Text($"Fecha: {DateTime.Now:dd/MM/yyyy}").FontSize(9);
+                            });
+
+                            column.Item().PaddingTop(5).PaddingBottom(15).LineHorizontal(1).LineColor("#0D6EFD");
+                        });
+
+                        // CONTENIDO
+                        page.Content().PaddingTop(10).Column(column =>
+                        {
+                            column.Item().Table(table =>
                             {
                                 table.ColumnsDefinition(columns =>
                                 {
-                                    columns.RelativeColumn(1);
-                                    columns.RelativeColumn(3);
-                                    columns.RelativeColumn(1);
+                                    columns.ConstantColumn(40);
+                                    columns.RelativeColumn(4);
+                                    columns.RelativeColumn(2);
                                     columns.RelativeColumn(2);
                                 });
 
+                                // Cabecera
                                 table.Header(header =>
                                 {
-                                    header.Cell().Text("ID").Bold();
-                                    header.Cell().Text("Nombre").Bold();
-                                    header.Cell().Text("Stock").Bold();
-                                    header.Cell().Text("Precio").Bold();
+                                    header.Cell().Background("#0D6EFD").Padding(6).Text("ID").Bold().FontColor(Colors.White);
+                                    header.Cell().Background("#0D6EFD").Padding(6).Text("Descripción Producto").Bold().FontColor(Colors.White);
+                                    header.Cell().Background("#0D6EFD").Padding(6).AlignCenter().Text("Stock").Bold().FontColor(Colors.White);
+                                    header.Cell().Background("#0D6EFD").Padding(6).AlignRight().Text("Precio").Bold().FontColor(Colors.White);
                                 });
 
+                                // Filas
+                                bool alternarFila = false;
                                 foreach (var producto in productos)
                                 {
-                                    table.Cell().Text(producto.Id.ToString());
-                                    table.Cell().Text(producto.Nombre);
-                                    table.Cell().Text(producto.Cantidad.ToString());
-                                    table.Cell().Text($"S/ {producto.Precio:F2}");
+                                    // ✅ Corregido: Usando solo Colors para evitar error CS0172
+                                    var fondoFila = alternarFila ? Colors.Grey.Lighten4 : Colors.White;
+
+                                    table.Cell().Background(fondoFila).Padding(6).Text(producto.Id.ToString());
+                                    table.Cell().Background(fondoFila).Padding(6).Text(producto.Nombre);
+
+                                    var stockCell = table.Cell().Background(fondoFila).Padding(6).AlignCenter();
+                                    if (producto.Cantidad == 0)
+                                        stockCell.Text("Agotado").Bold().FontColor(Colors.Red.Medium);
+                                    else
+                                        stockCell.Text(producto.Cantidad.ToString());
+
+                                    table.Cell().Background(fondoFila).Padding(6).AlignRight().Text($"Bs. {producto.Precio:N2}");
+
+                                    alternarFila = !alternarFila;
                                 }
                             });
 
-                        page.Footer()
-                            .AlignCenter()
-                            .Text($"Generado el {DateTime.Now:dd/MM/yyyy HH:mm} - Candy Shoes");
+                            // Resumen de Stock Total
+                            column.Item().AlignRight().PaddingTop(15).Width(160).Background(Colors.Grey.Lighten4).Padding(8).Row(r =>
+                            {
+                                r.RelativeItem().Text("Total Unidades:").Bold().FontSize(10);
+                                r.RelativeItem().AlignRight().Text($"{totalItems} uds.").Bold().FontSize(10).FontColor("#0D6EFD");
+                            });
+                        });
+
+                        // PIE DE PÁGINA
+                        page.Footer().Column(c =>
+                        {
+                            c.Item().LineHorizontal(0.5f).LineColor(Colors.Grey.Lighten1);
+                            c.Item().PaddingTop(5).Row(row =>
+                            {
+                                row.RelativeItem().Text("Candy Shoes - Control de Inventarios").FontColor(Colors.Grey.Medium).FontSize(8);
+                                // ✅ Corregido: Sintaxis clásica para números de página en QuestPDF
+                                row.RelativeItem().AlignRight().Text(t => {
+                                    t.Span("Pág. ");
+                                    t.CurrentPageNumber();
+                                });
+                            });
+                        });
                     });
                 });
 
@@ -343,8 +305,7 @@ namespace LOGIN.Controllers
                 document.GeneratePdf(stream);
                 stream.Position = 0;
 
-                var fileName = $"Productos_{DateTime.Now:yyyyMMddHHmmss}.pdf";
-                return File(stream, "application/pdf", fileName);
+                return File(stream, "application/pdf", $"Inventario_{DateTime.Now:yyyyMMdd}.pdf");
             }
             catch (Exception ex)
             {
