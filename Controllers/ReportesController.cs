@@ -51,6 +51,9 @@ namespace LOGIN.Controllers
         // ============================================================
         // 📄 REPORTE DE VENTAS - PDF (SINTAXIS CORREGIDA)
         // ============================================================
+        // ============================================================
+        // 📄 REPORTE DE VENTAS - PDF (SINTAXIS CORREGIDA + SOPORTE POSTGRES UTC)
+        // ============================================================
         [HttpGet]
         public async Task<IActionResult> VentasPdf(DateTime? fechaInicio, DateTime? fechaFin)
         {
@@ -67,10 +70,19 @@ namespace LOGIN.Controllers
                         .ThenInclude(d => d.Producto)
                     .AsQueryable();
 
+                // ✅ SOLUCIÓN AL ERROR DE POSTGRESQL: Forzar las fechas de los filtros a UTC
                 if (fechaInicio.HasValue)
-                    query = query.Where(p => p.FechaPedido >= fechaInicio.Value);
+                {
+                    var inicioUtc = DateTime.SpecifyKind(fechaInicio.Value, DateTimeKind.Utc);
+                    query = query.Where(p => p.FechaPedido >= inicioUtc);
+                }
+
                 if (fechaFin.HasValue)
-                    query = query.Where(p => p.FechaPedido <= fechaFin.Value);
+                {
+                    // Forzamos el fin de día en formato UTC
+                    var finUtc = DateTime.SpecifyKind(fechaFin.Value, DateTimeKind.Utc);
+                    query = query.Where(p => p.FechaPedido <= finUtc);
+                }
 
                 var pedidos = await query.OrderByDescending(p => p.FechaPedido).ToListAsync();
                 decimal granTotal = pedidos.Sum(p => p.Total);
@@ -82,7 +94,7 @@ namespace LOGIN.Controllers
                         page.Size(PageSizes.A4);
                         page.Margin(1.5f, Unit.Centimetre);
                         page.PageColor(Colors.White);
-                        page.DefaultTextStyle(x => x.FontFamily("Helvetica").FontSize(9)); // ✅ Corregido
+                        page.DefaultTextStyle(x => x.FontFamily("Helvetica").FontSize(9));
 
                         // ENCABEZADO
                         page.Header().Column(column =>
@@ -138,11 +150,10 @@ namespace LOGIN.Controllers
                                 bool alternarFila = false;
                                 foreach (var pedido in pedidos)
                                 {
-                                    // ✅ Corregido: Usando solo Colors para evitar error CS0172
                                     var fondoFila = alternarFila ? Colors.Grey.Lighten4 : Colors.White;
 
                                     table.Cell().Background(fondoFila).Padding(6).Text(pedido.Id.ToString());
-                                    table.Cell().Background(fondoFila).Padding(6).Text(pedido.FechaPedido.ToString("dd/MM/yyyy HH:mm"));
+                                    table.Cell().Background(fondoFila).Padding(6).Text(pedido.FechaPedido.ToLocalTime().ToString("dd/MM/yyyy HH:mm")); // Convertimos a local al mostrar en pantalla
                                     table.Cell().Background(fondoFila).Padding(6).Text(pedido.Usuario?.Nombre ?? "N/A");
                                     table.Cell().Background(fondoFila).Padding(6).Text(pedido.Estado.ToString());
                                     table.Cell().Background(fondoFila).Padding(6).AlignRight().Text($"Bs. {pedido.Total:N2}");
@@ -166,7 +177,6 @@ namespace LOGIN.Controllers
                             c.Item().PaddingTop(5).Row(row =>
                             {
                                 row.RelativeItem().Text("Candy Shoes - Sistema de Gestión Interna").FontColor(Colors.Grey.Medium).FontSize(8);
-                                // ✅ Corregido: Sintaxis clásica para números de página en QuestPDF
                                 row.RelativeItem().AlignRight().Text(t => {
                                     t.Span("Pág. ");
                                     t.CurrentPageNumber();
