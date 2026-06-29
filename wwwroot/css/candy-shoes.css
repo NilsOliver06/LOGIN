@@ -308,77 +308,315 @@ body {
     }
 }
 /* ============================================================
-   📌 ESTILOS DEL PANEL DE FILTROS
+   🍬 FILTROS - DISEÑO PREMIUM SOFT/CANDY
    ============================================================ */
 
 .filtros-panel {
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     position: sticky;
     top: 20px;
     transition: all 0.3s ease;
+    border: none;
 }
+
+/* ============================================================
+   📌 CABECERA
+   ============================================================ */
 
 .filtros-header {
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
 }
 
-.filtros-panel select,
-.filtros-panel input {
-    border: 1px solid #e0e0e0;
-    transition: border-color 0.3s ease;
+.filtros-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-    .filtros-panel select:focus,
-    .filtros-panel input:focus {
-        border-color: #FF6B6B;
-        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+.filtros-icon {
+    font-size: 1.2rem;
+    color: #FF6B6B;
+    opacity: 0.8;
+}
+
+.filtros-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #2C3E50;
+    margin: 0;
+}
+
+.btn-limpiar {
+    background: none;
+    border: none;
+    color: #B0B0B0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    padding: 6px 12px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .btn-limpiar:hover {
+        color: #FF6B6B;
+        background: rgba(255, 107, 107, 0.08);
     }
 
-/* Responsive: Ocultar filtros en móvil */
+    .btn-limpiar i {
+        font-size: 0.75rem;
+    }
+
+/* ============================================================
+   📏 DIVISOR
+   ============================================================ */
+
+.filtros-divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, #f0f0f0, #ffffff);
+    margin: 0 0 20px 0;
+}
+
+/* ============================================================
+   🏷️ GRUPOS DE FILTROS
+   ============================================================ */
+
+.filtro-grupo {
+    margin-bottom: 24px;
+}
+
+    .filtro-grupo:last-of-type {
+        margin-bottom: 16px;
+    }
+
+.filtro-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: #6B7280;
+    margin-bottom: 10px;
+}
+
+.filtro-icon {
+    color: #FF6B6B;
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+/* ============================================================
+   💰 INPUTS DE PRECIO
+   ============================================================ */
+
+.precio-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.precio-input-wrapper {
+    position: relative;
+    flex: 1;
+}
+
+.precio-symbol {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    color: #B0B0B0;
+    font-weight: 500;
+}
+
+.precio-input {
+    width: 100%;
+    padding: 10px 12px 10px 28px;
+    border: 1.5px solid #E8E8E8;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    color: #2C3E50;
+    transition: all 0.3s ease;
+    background: #FAFAFA;
+    outline: none;
+    appearance: none;
+    -moz-appearance: textfield;
+}
+
+    .precio-input::-webkit-outer-spin-button,
+    .precio-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .precio-input:focus {
+        border-color: #FF6B6B;
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.12);
+        background: #ffffff;
+    }
+
+    .precio-input::placeholder {
+        color: #C0C0C0;
+        font-weight: 400;
+    }
+
+.precio-separator {
+    color: #D0D0D0;
+    font-weight: 300;
+    font-size: 1rem;
+    padding: 0 2px;
+}
+
+/* ============================================================
+   📊 SELECTOR DE STOCK
+   ============================================================ */
+
+.select-wrapper {
+    position: relative;
+}
+
+    .select-wrapper .select-arrow {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #B0B0B0;
+        font-size: 0.75rem;
+        pointer-events: none;
+        transition: transform 0.3s ease;
+    }
+
+.filtro-select {
+    width: 100%;
+    padding: 10px 16px;
+    border: 1.5px solid #E8E8E8;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    color: #2C3E50;
+    background: #FAFAFA;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    outline: none;
+}
+
+    .filtro-select:focus {
+        border-color: #FF6B6B;
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.12);
+        background: #ffffff;
+    }
+
+    .filtro-select:hover {
+        border-color: #D0D0D0;
+    }
+
+.select-wrapper:hover .select-arrow {
+    color: #FF6B6B;
+}
+
+/* ============================================================
+   📊 CONTADOR DE RESULTADOS
+   ============================================================ */
+
+.filtros-footer {
+    padding-top: 16px;
+    border-top: 1px solid #F0F0F0;
+    margin-top: 4px;
+}
+
+.resultados-count {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    color: #9CA3AF;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+    .resultados-count i {
+        color: #FF6B6B;
+        opacity: 0.6;
+    }
+
+#contadorResultados {
+    font-weight: 600;
+    color: #2C3E50;
+}
+
+/* ============================================================
+   📱 BOTÓN TOGGLE MÓVIL
+   ============================================================ */
+
+.btn-toggle-mobile {
+    background: none;
+    border: 1.5px solid #E8E8E8;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #6B7280;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+    .btn-toggle-mobile:hover {
+        border-color: #FF6B6B;
+        color: #FF6B6B;
+        background: rgba(255, 107, 107, 0.05);
+    }
+
+/* ============================================================
+   📱 RESPONSIVE
+   ============================================================ */
+
 @media (max-width: 767.98px) {
     .filtros-panel {
         position: relative;
         top: 0;
         margin-bottom: 20px;
         display: none;
+        padding: 20px;
     }
 
         .filtros-panel.visible {
             display: block;
+            animation: fadeSlideIn 0.3s ease;
         }
-}
 
-/* ============================================================
-   📱 NOTIFICACIÓN FLOTANTE
-   ============================================================ */
+    @keyframes fadeSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
 
-.notificacion-flotante {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
-    color: white;
-    padding: 15px 25px;
-    border-radius: 50px;
-    box-shadow: 0 8px 30px rgba(255, 107, 107, 0.4);
-    z-index: 9999;
-    font-weight: 500;
-    animation: slideUp 0.5s ease;
-    font-family: 'Poppins', sans-serif;
-}
-
-@keyframes slideUp {
-    0% {
-        transform: translateY(100px);
-        opacity: 0;
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
-    100% {
-        transform: translateY(0);
-        opacity: 1;
+    .filtros-header {
+        padding-bottom: 12px;
+    }
+}
+
+@media (min-width: 768px) {
+    .filtros-panel {
+        display: block !important;
     }
 }
