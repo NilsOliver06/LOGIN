@@ -308,315 +308,170 @@ body {
     }
 }
 /* ============================================================
-   🍬 FILTROS - DISEÑO PREMIUM SOFT/CANDY
+   🔍 BUSCADOR PREMIUM
    ============================================================ */
 
-.filtros-panel {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    position: sticky;
-    top: 20px;
-    transition: all 0.3s ease;
-    border: none;
-}
-
-/* ============================================================
-   📌 CABECERA
-   ============================================================ */
-
-.filtros-header {
+.tienda-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-.filtros-header-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.filtros-icon {
-    font-size: 1.2rem;
-    color: #FF6B6B;
-    opacity: 0.8;
-}
-
-.filtros-title {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: #2C3E50;
-    margin: 0;
-}
-
-.btn-limpiar {
-    background: none;
-    border: none;
-    color: #B0B0B0;
-    font-size: 0.85rem;
-    font-weight: 500;
-    font-family: 'Poppins', sans-serif;
-    padding: 6px 12px;
-    border-radius: 20px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-    .btn-limpiar:hover {
-        color: #FF6B6B;
-        background: rgba(255, 107, 107, 0.08);
-    }
-
-    .btn-limpiar i {
-        font-size: 0.75rem;
-    }
-
-/* ============================================================
-   📏 DIVISOR
-   ============================================================ */
-
-.filtros-divider {
-    border: none;
-    height: 1px;
-    background: linear-gradient(to right, #f0f0f0, #ffffff);
-    margin: 0 0 20px 0;
-}
-
-/* ============================================================
-   🏷️ GRUPOS DE FILTROS
-   ============================================================ */
-
-.filtro-grupo {
-    margin-bottom: 24px;
-}
-
-    .filtro-grupo:last-of-type {
-        margin-bottom: 16px;
-    }
-
-.filtro-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
-    font-size: 0.85rem;
-    color: #6B7280;
-    margin-bottom: 10px;
-}
-
-.filtro-icon {
-    color: #FF6B6B;
-    font-size: 0.9rem;
-    opacity: 0.7;
-}
-
-/* ============================================================
-   💰 INPUTS DE PRECIO
-   ============================================================ */
-
-.precio-inputs {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.precio-input-wrapper {
-    position: relative;
+.tienda-header-left {
     flex: 1;
 }
 
-.precio-symbol {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.8rem;
-    color: #B0B0B0;
-    font-weight: 500;
-}
-
-.precio-input {
-    width: 100%;
-    padding: 10px 12px 10px 28px;
-    border: 1.5px solid #E8E8E8;
-    border-radius: 8px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.85rem;
-    color: #2C3E50;
-    transition: all 0.3s ease;
-    background: #FAFAFA;
-    outline: none;
-    appearance: none;
-    -moz-appearance: textfield;
-}
-
-    .precio-input::-webkit-outer-spin-button,
-    .precio-input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-
-    .precio-input:focus {
-        border-color: #FF6B6B;
-        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.12);
-        background: #ffffff;
-    }
-
-    .precio-input::placeholder {
-        color: #C0C0C0;
-        font-weight: 400;
-    }
-
-.precio-separator {
-    color: #D0D0D0;
-    font-weight: 300;
-    font-size: 1rem;
-    padding: 0 2px;
+.tienda-header-right {
+    display: flex;
+    gap: 10px;
 }
 
 /* ============================================================
-   📊 SELECTOR DE STOCK
+   BARRA DE BÚSQUEDA
    ============================================================ */
 
-.select-wrapper {
+.buscador-wrapper {
+    background: white;
+    border-radius: 16px;
+    padding: 16px 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.buscador-input-group {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 250px;
     position: relative;
 }
 
-    .select-wrapper .select-arrow {
-        position: absolute;
-        right: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #B0B0B0;
-        font-size: 0.75rem;
-        pointer-events: none;
-        transition: transform 0.3s ease;
-    }
+.buscador-icon {
+    position: absolute;
+    left: 16px;
+    color: #B0B0B0;
+    font-size: 1rem;
+    pointer-events: none;
+}
 
-.filtro-select {
-    width: 100%;
-    padding: 10px 16px;
-    border: 1.5px solid #E8E8E8;
-    border-radius: 8px;
+.buscador-input {
+    flex: 1;
+    padding: 12px 16px 12px 46px;
+    border: 2px solid #F0F0F0;
+    border-radius: 50px;
     font-family: 'Poppins', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     color: #2C3E50;
-    background: #FAFAFA;
-    appearance: none;
-    -webkit-appearance: none;
     transition: all 0.3s ease;
-    cursor: pointer;
+    background: #FAFAFA;
     outline: none;
 }
 
-    .filtro-select:focus {
+    .buscador-input:focus {
         border-color: #FF6B6B;
-        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.12);
-        background: #ffffff;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.08);
     }
 
-    .filtro-select:hover {
-        border-color: #D0D0D0;
+    .buscador-input::placeholder {
+        color: #C0C0C0;
     }
 
-.select-wrapper:hover .select-arrow {
-    color: #FF6B6B;
-}
-
-/* ============================================================
-   📊 CONTADOR DE RESULTADOS
-   ============================================================ */
-
-.filtros-footer {
-    padding-top: 16px;
-    border-top: 1px solid #F0F0F0;
-    margin-top: 4px;
-}
-
-.resultados-count {
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.8rem;
-    color: #9CA3AF;
+.buscador-btn {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 10px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    font-weight: 500;
 }
 
-    .resultados-count i {
-        color: #FF6B6B;
-        opacity: 0.6;
+    .buscador-btn:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
     }
 
-#contadorResultados {
-    font-weight: 600;
-    color: #2C3E50;
+    .buscador-btn i {
+        font-size: 1rem;
+    }
+
+.buscador-extra {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
-/* ============================================================
-   📱 BOTÓN TOGGLE MÓVIL
-   ============================================================ */
-
-.btn-toggle-mobile {
-    background: none;
-    border: 1.5px solid #E8E8E8;
-    border-radius: 50px;
-    padding: 10px 20px;
-    font-family: 'Poppins', sans-serif;
+.resultados-badge {
     font-size: 0.85rem;
-    font-weight: 500;
     color: #6B7280;
-    transition: all 0.3s ease;
-    width: 100%;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
 }
 
-    .btn-toggle-mobile:hover {
-        border-color: #FF6B6B;
+.btn-limpiar-busqueda {
+    background: none;
+    border: none;
+    color: #B0B0B0;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+    .btn-limpiar-busqueda:hover {
         color: #FF6B6B;
-        background: rgba(255, 107, 107, 0.05);
+        background: rgba(255, 107, 107, 0.06);
     }
 
 /* ============================================================
    📱 RESPONSIVE
    ============================================================ */
 
-@media (max-width: 767.98px) {
-    .filtros-panel {
-        position: relative;
-        top: 0;
-        margin-bottom: 20px;
-        display: none;
-        padding: 20px;
+@media (max-width: 768px) {
+    .buscador-wrapper {
+        flex-direction: column;
+        align-items: stretch;
     }
 
-        .filtros-panel.visible {
-            display: block;
-            animation: fadeSlideIn 0.3s ease;
+    .buscador-input-group {
+        min-width: auto;
+    }
+
+    .buscador-btn {
+        padding: 12px 18px;
+        font-size: 0.9rem;
+    }
+
+    .buscador-extra {
+        justify-content: space-between;
+    }
+
+    .tienda-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tienda-header-right {
+        width: 100%;
+    }
+
+        .tienda-header-right .btn-candy {
+            width: 100%;
+            justify-content: center;
         }
-
-    @keyframes fadeSlideIn {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .filtros-header {
-        padding-bottom: 12px;
-    }
-}
-
-@media (min-width: 768px) {
-    .filtros-panel {
-        display: block !important;
-    }
 }
