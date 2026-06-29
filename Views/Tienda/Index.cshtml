@@ -7,19 +7,22 @@
 
 <div class="container">
     <!-- ============================================================ -->
-    <!-- 🔍 ENCABEZADO CON BUSCADOR PREMIUM -->
+    <!-- 🔍 BUSCADOR + CARRITO (sin título) -->
     <!-- ============================================================ -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="tienda-header">
-                <div class="tienda-header-left">
-                    <h1 class="section-title">
-                        <i class="fas fa-store text-candy-primary me-2"></i>Nuestra Tienda
-                    </h1>
-                    <p class="text-muted" id="resultadosTexto">Encuentra el calzado perfecto para ti</p>
+            <div class="buscador-wrapper">
+                <div class="buscador-input-group">
+                    <i class="fas fa-search buscador-icon"></i>
+                    <input type="text" id="buscadorInput" class="buscador-input"
+                           placeholder="Buscar por nombre o descripción..."
+                           autocomplete="off" />
+                    <button id="buscadorBtn" class="buscador-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
-                <div class="tienda-header-right">
-                    <a asp-action="Carrito" class="btn btn-candy position-relative">
+                <div class="buscador-extra">
+                    <a asp-action="Carrito" class="btn btn-candy position-relative btn-carrito-header">
                         <i class="fas fa-shopping-cart me-2"></i>Carrito
                         <span class="cart-badge" id="cartBadge">
                             @{
@@ -39,30 +42,8 @@
                             @count
                         </span>
                     </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- 🔍 BARRA DE BÚSQUEDA PREMIUM -->
-    <!-- ============================================================ -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="buscador-wrapper">
-                <div class="buscador-input-group">
-                    <i class="fas fa-search buscador-icon"></i>
-                    <input type="text" id="buscadorInput" class="buscador-input"
-                           placeholder="Buscar por nombre o descripción..."
-                           autocomplete="off" />
-                    <button id="buscadorBtn" class="buscador-btn">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-                <div class="buscador-extra">
-                    <span id="contadorResultados" class="resultados-badge">0 productos</span>
-                    <button id="limpiarBusqueda" class="btn-limpiar-busqueda">
-                        <i class="fas fa-times"></i> Limpiar
+                    <button id="limpiarBusqueda" class="btn-limpiar-icon" title="Limpiar búsqueda">
+                        <i class="fas fa-times"></i>
                     </button>
                 </div>
             </div>
@@ -203,10 +184,7 @@
     }
     });
 
-    // Actualizar contador
-    $('#contadorResultados').text(count + ' productos');
-
-    // Mensaje de "sin resultados"
+    // Mostrar/ocultar mensaje de sin resultados
     if (!hayResultados && termino) {
     $('#sinResultados').show();
     $('#productosGrid').hide();
@@ -240,7 +218,7 @@
     });
 
     // ============================================================
-    // 🗑️ LIMPIAR BÚSQUEDA
+    // 🗑️ LIMPIAR BÚSQUEDA (icono)
     // ============================================================
     $('#limpiarBusqueda, #limpiarBusquedaResultados').click(function() {
     $('#buscadorInput').val('');
@@ -295,12 +273,5 @@
     notificacion.fadeOut(500, function() { $(this).remove(); });
     }, 3000);
     }
-
-    // ============================================================
-    // 🚀 INICIALIZAR CONTADOR
-    // ============================================================
-    setTimeout(function() {
-    $('#contadorResultados').text($('.producto-item:visible').length + ' productos');
-    }, 300);
     });
 </script>

@@ -308,28 +308,7 @@ body {
     }
 }
 /* ============================================================
-   🔍 BUSCADOR PREMIUM
-   ============================================================ */
-
-.tienda-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.tienda-header-left {
-    flex: 1;
-}
-
-.tienda-header-right {
-    display: flex;
-    gap: 10px;
-}
-
-/* ============================================================
-   BARRA DE BÚSQUEDA
+   🔍 BUSCADOR PREMIUM (SIN TÍTULO)
    ============================================================ */
 
 .buscador-wrapper {
@@ -411,31 +390,32 @@ body {
 .buscador-extra {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
 }
 
-.resultados-badge {
-    font-size: 0.85rem;
-    color: #6B7280;
-    font-weight: 500;
-    font-family: 'Poppins', sans-serif;
+.btn-carrito-header {
+    white-space: nowrap;
 }
 
-.btn-limpiar-busqueda {
+.btn-limpiar-icon {
     background: none;
     border: none;
     color: #B0B0B0;
-    font-size: 0.85rem;
+    font-size: 1.2rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: 'Poppins', sans-serif;
-    padding: 4px 12px;
-    border-radius: 20px;
+    padding: 8px 12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
 }
 
-    .btn-limpiar-busqueda:hover {
+    .btn-limpiar-icon:hover {
         color: #FF6B6B;
-        background: rgba(255, 107, 107, 0.06);
+        background: rgba(255, 107, 107, 0.08);
     }
 
 /* ============================================================
@@ -461,17 +441,8 @@ body {
         justify-content: space-between;
     }
 
-    .tienda-header {
-        flex-direction: column;
-        align-items: flex-start;
+    .btn-carrito-header {
+        flex: 1;
+        justify-content: center;
     }
-
-    .tienda-header-right {
-        width: 100%;
-    }
-
-        .tienda-header-right .btn-candy {
-            width: 100%;
-            justify-content: center;
-        }
 }
