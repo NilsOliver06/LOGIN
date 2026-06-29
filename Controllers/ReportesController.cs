@@ -60,7 +60,8 @@ namespace LOGIN.Controllers
                 if (!EsAdmin())
                     return RedirectToAction("Index", "Home");
 
-                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                // ✅ CORREGIDO: Sintaxis estricta requerida por EPPlus v8+ para evitar el error
+                ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
                 var query = _context.Pedidos
                     .Include(p => p.Usuario)
@@ -226,7 +227,8 @@ namespace LOGIN.Controllers
                 if (!EsAdmin())
                     return RedirectToAction("Index", "Home");
 
-                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                // ✅ CORREGIDO: Sintaxis estricta requerida por EPPlus v8+ para evitar el error
+                ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
                 var productos = await _context.Productos.OrderBy(p => p.Nombre).ToListAsync();
 
