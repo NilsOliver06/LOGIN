@@ -60,7 +60,7 @@ namespace LOGIN.Controllers
                 if (!EsAdmin())
                     return RedirectToAction("Index", "Home");
 
-                // ✅ CORREGIDO: Sintaxis estricta requerida por EPPlus v8+ para evitar el error
+                // ✅ SOLUCIÓN AL ERROR: Asignación limpia usando el enum compatible LicenseContext
                 ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
                 var query = _context.Pedidos
@@ -227,7 +227,7 @@ namespace LOGIN.Controllers
                 if (!EsAdmin())
                     return RedirectToAction("Index", "Home");
 
-                // ✅ CORREGIDO: Sintaxis estricta requerida por EPPlus v8+ para evitar el error
+                // ✅ SOLUCIÓN AL ERROR: Asignación limpia usando el enum compatible LicenseContext
                 ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
                 var productos = await _context.Productos.OrderBy(p => p.Nombre).ToListAsync();
