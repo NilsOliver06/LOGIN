@@ -1,0 +1,99 @@
+﻿@{
+    ViewData["Title"] = "Reportes - Candy Shoes";
+    var esAdmin = Context.Session.GetString("UsuarioRol") == "Admin";
+}
+
+@if (!esAdmin)
+{
+    <div class="alert alert-danger text-center">
+        <i class="fas fa-lock me-2"></i> No tienes permiso para acceder a esta sección.
+    </div>
+    return;
+}
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="section-title">
+                <i class="fas fa-chart-bar text-candy-primary me-2"></i>Reportes
+            </h1>
+            <p class="text-muted">Genera reportes de ventas y productos en PDF o Excel</p>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- REPORTE DE VENTAS -->
+    <!-- ============================================================ -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card-candy">
+                <div class="card-header bg-white border-bottom-0 pt-4">
+                    <h3 class="fw-bold">
+                        <i class="fas fa-receipt text-success me-2"></i>Reporte de Ventas
+                    </h3>
+                    <p class="text-muted">Genera un reporte con todas las ventas realizadas</p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="get" asp-action="VentasExcel" class="mb-2">
+                        <div class="row g-3">
+                            <div class="col-md-5">
+                                <label class="form-label fw-semibold">Desde</label>
+                                <input type="date" name="fechaInicio" class="form-control rounded-3" />
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label fw-semibold">Hasta</label>
+                                <input type="date" name="fechaFin" class="form-control rounded-3" />
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-success w-100 rounded-pill">
+                                    <i class="fas fa-file-excel me-1"></i> Excel
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <form method="get" asp-action="VentasPdf">
+                        <div class="row g-3">
+                            <div class="col-md-5">
+                                <label class="form-label fw-semibold">Desde</label>
+                                <input type="date" name="fechaInicio" class="form-control rounded-3" />
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label fw-semibold">Hasta</label>
+                                <input type="date" name="fechaFin" class="form-control rounded-3" />
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-danger w-100 rounded-pill">
+                                    <i class="fas fa-file-pdf me-1"></i> PDF
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- REPORTE DE PRODUCTOS -->
+        <!-- ============================================================ -->
+        <div class="col-md-6">
+            <div class="card-candy">
+                <div class="card-header bg-white border-bottom-0 pt-4">
+                    <h3 class="fw-bold">
+                        <i class="fas fa-boxes text-primary me-2"></i>Reporte de Productos
+                    </h3>
+                    <p class="text-muted">Genera un reporte con todos los productos del inventario</p>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-flex gap-2">
+                        <a asp-action="ProductosExcel" class="btn btn-success flex-grow-1 rounded-pill">
+                            <i class="fas fa-file-excel me-2"></i> Exportar Excel
+                        </a>
+                        <a asp-action="ProductosPdf" class="btn btn-danger flex-grow-1 rounded-pill">
+                            <i class="fas fa-file-pdf me-2"></i> Exportar PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
