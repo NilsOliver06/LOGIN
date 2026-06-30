@@ -1,13 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using LOGIN.Data;
 using LOGIN.Models;
+using Microsoft.AspNetCore.DataProtection; // 👈 Asegura esta directiva para las llaves de cifrado
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ============================================================
 // CONFIGURACIÓN DE BASE DE DATOS - SUPABASE
 // ============================================================
-
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 Console.WriteLine("🔗 Intentando conectar a Supabase...");
@@ -24,11 +25,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // ============================================================
 // SERVICIOS DE LA APLICACIÓN
 // ============================================================
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
-// 🔥 CONFIGURACIÓN DE SESSION MEJORADA
+// 🛡️ SOLUCIÓN DEFINITIVA PARA EL "ERROR UNPROTECTING THE SESSION COOKIE"
+// Hace que las llaves de cifrado persistan en el disco y sobrevivan a los reinicios de Render
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(@"/app/DataProtection-Keys"));
+
+// 🔥 CONFIGURACIÓN DE SESSION MEJORADA 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -49,7 +54,6 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 // ============================================================
 // CONFIGURACIÓN DE LA APLICACIÓN
 // ============================================================
-
 var app = builder.Build();
 
 // ============================================================
@@ -125,7 +129,6 @@ using (var scope = app.Services.CreateScope())
 // ============================================================
 // MIDDLEWARE
 // ============================================================
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -135,13 +138,13 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseSession();
+
+app.UseSession(); // El uso de sesión debe ir estrictamente antes de Authorization
 app.UseAuthorization();
 
 // ============================================================
 // RUTAS
 // ============================================================
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
@@ -151,7 +154,6 @@ app.MapControllers();
 // ============================================================
 // INICIAR APLICACIÓN
 // ============================================================
-
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 Console.WriteLine($"🚀 Iniciando en puerto: {port}");
 app.Run($"http://*:{port}");
