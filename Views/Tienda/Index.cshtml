@@ -6,13 +6,9 @@
 }
 
 <div class="container">
-    <!-- ============================================================ -->
-    <!-- 🔍 BUSCADOR + CARRITO (carrito a la izquierda) -->
-    <!-- ============================================================ -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="buscador-wrapper">
-                <!-- Carrito a la izquierda -->
                 <a asp-action="Carrito" class="btn btn-candy position-relative btn-carrito-header">
                     <i class="fas fa-shopping-cart me-2"></i>Carrito
                     <span class="cart-badge" id="cartBadge">
@@ -34,7 +30,6 @@
                     </span>
                 </a>
 
-                <!-- Buscador con limpiar dentro -->
                 <div class="buscador-input-group">
                     <i class="fas fa-search buscador-icon"></i>
                     <input type="text" id="buscadorInput" class="buscador-input"
@@ -51,9 +46,6 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- 📦 GRID DE PRODUCTOS -->
-    <!-- ============================================================ -->
     <div class="row g-4" id="productosGrid">
         @if (!Model.Any())
         {
@@ -75,7 +67,6 @@
                      data-precio="@producto.Precio"
                      data-stock="@producto.Cantidad">
                     <div class="card producto-card h-100">
-                        <!-- Etiqueta de estado -->
                         @if (producto.Cantidad == 0)
                         {
                             <div class="producto-badge bg-danger">
@@ -95,7 +86,6 @@
                             </div>
                         }
 
-                        <!-- Imagen / Icono -->
                         <div class="card-img-top text-center pt-4 bg-candy-light">
                             <i class="fas fa-shoe-prints" style="font-size: 5rem; color: #FF6B6B;"></i>
                         </div>
@@ -126,7 +116,7 @@
 
                         <div class="card-footer bg-white border-top-0 pb-3">
                             <div class="d-flex justify-content-between">
-                                <a asp-action="Details" asp-route-id="@producto.Id" class="btn btn-sm btn-candy-outline">
+                                <a asp-action="ProductoDetails" asp-route-id="@producto.Id" class="btn btn-sm btn-candy-outline">
                                     <i class="fas fa-eye"></i> Ver
                                 </a>
                                 <small class="text-muted align-self-center">
@@ -140,9 +130,6 @@
         }
     </div>
 
-    <!-- ============================================================ -->
-    <!-- 🎯 MENSAJE DE "SIN RESULTADOS" -->
-    <!-- ============================================================ -->
     <div id="sinResultados" class="text-center py-5" style="display: none;">
         <i class="fas fa-search" style="font-size: 4rem; color: #ddd;"></i>
         <h4 class="mt-3 text-muted">No encontramos productos</h4>
@@ -153,9 +140,6 @@
     </div>
 </div>
 
-<!-- ============================================================ -->
-<!-- 📱 SCRIPTS -->
-<!-- ============================================================ -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -164,7 +148,6 @@
     // ============================================================
     function buscarProductos() {
     var termino = $('#buscadorInput').val().toLowerCase().trim();
-    var count = 0;
     var hayResultados = false;
 
     $('.producto-item').each(function() {
@@ -178,14 +161,12 @@
 
     if (mostrar) {
     $(this).show();
-    count++;
     hayResultados = true;
     } else {
     $(this).hide();
     }
     });
 
-    // Mostrar/ocultar mensaje de sin resultados
     if (!hayResultados && termino) {
     $('#sinResultados').show();
     $('#productosGrid').hide();
@@ -195,32 +176,20 @@
     }
     }
 
-    // ============================================================
-    // 🔍 BÚSQUEDA INSTANTÁNEA (mientras escribes)
-    // ============================================================
     $('#buscadorInput').on('input', function() {
     buscarProductos();
     });
 
-    // ============================================================
-    // 🔍 BÚSQUEDA CON BOTÓN (lupita)
-    // ============================================================
     $('#buscadorBtn').click(function() {
     buscarProductos();
     });
 
-    // ============================================================
-    // 🔍 BÚSQUEDA CON ENTER
-    // ============================================================
     $('#buscadorInput').keypress(function(e) {
     if (e.which === 13) {
     buscarProductos();
     }
     });
 
-    // ============================================================
-    // 🗑️ LIMPIAR BÚSQUEDA (icono)
-    // ============================================================
     $('#limpiarBusqueda, #limpiarBusquedaResultados').click(function() {
     $('#buscadorInput').val('');
     buscarProductos();
@@ -264,9 +233,6 @@
     });
     });
 
-    // ============================================================
-    // 📢 NOTIFICACIÓN FLOTANTE
-    // ============================================================
     function mostrarNotificacion(mensaje) {
     var notificacion = $('<div class="notificacion-flotante">' + mensaje + '</div>');
     $('body').append(notificacion);

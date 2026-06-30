@@ -246,10 +246,10 @@ namespace LOGIN.Controllers
         }
 
         // ============================================================
-        // NUEVOS MÉTODOS - CRUD DE PEDIDOS (ADMIN)
+        // CRUD DE PEDIDOS (ADMIN)
         // ============================================================
 
-        // GET: Tienda/AdminPedidos (Lista de todos los pedidos - solo Admin)
+        // GET: Tienda/AdminPedidos
         [HttpGet]
         public async Task<IActionResult> AdminPedidos()
         {
@@ -297,10 +297,11 @@ namespace LOGIN.Controllers
             if (!esAdmin && pedido.UsuarioId != int.Parse(usuarioId))
                 return RedirectToAction("MisCompras");
 
-            return View(pedido);
+            // Forzamos explícitamente a que busque la vista "Details" (de pedidos)
+            return View("Details", pedido);
         }
 
-        // GET: Tienda/Edit/5 (Cambiar estado del pedido - solo Admin)
+        // GET: Tienda/Edit/5
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -365,7 +366,7 @@ namespace LOGIN.Controllers
             }
         }
 
-        // GET: Tienda/Cancelar/5 (Cancelar pedido - Usuario o Admin)
+        // GET: Tienda/Cancelar/5
         [HttpGet]
         public async Task<IActionResult> Cancelar(int? id)
         {
@@ -483,7 +484,7 @@ namespace LOGIN.Controllers
         }
 
         // ============================================================
-        // 🔥 NUEVA ACCIÓN SEGURA: DETALLES DE UN PRODUCTO
+        // 🔥 ACCIÓN REPARADA: DETALLES DE UN PRODUCTO
         // ============================================================
         [HttpGet]
         public async Task<IActionResult> ProductoDetails(int? id)
@@ -494,18 +495,17 @@ namespace LOGIN.Controllers
             if (id == null)
                 return NotFound();
 
-            // Busca el zapato directamente de la tabla Productos
             var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Id == id);
 
             if (producto == null)
                 return NotFound();
 
-            // Mantiene el total de items en la cesta actualizado en el layout
             ViewBag.CarritoCount = await _context.CarritoItems
                 .Where(c => c.UsuarioId == GetUsuarioId())
                 .SumAsync(c => c.Cantidad);
 
-            return View(producto);
+            // Forzamos explícitamente a buscar el archivo "ProductoDetails"
+            return View("ProductoDetails", producto);
         }
 
         private bool PedidoExists(int id)
