@@ -1,13 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using LOGIN.Data;
 using LOGIN.Models;
-using System.Net;
-
-// ============================================================
-// 🔥 FORZAR IPv4 PARA SUPABASE
-// ============================================================
-ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-AppContext.SetSwitch("System.Net.DisableIPv6", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 // CONFIGURACIÓN DE BASE DE DATOS - SUPABASE
 // ============================================================
 
-// Leer connection string de variable de entorno o appsettings
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 Console.WriteLine("🔗 Intentando conectar a Supabase...");
@@ -36,7 +28,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
-// Configuración de Session
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -52,21 +43,19 @@ builder.Services.AddSession(options =>
 var app = builder.Build();
 
 // ============================================================
-// 🔥 VERIFICAR CONEXIÓN (SIN MIGRACIONES AUTOMÁTICAS)
+// 🔥 VERIFICAR CONEXIÓN
 // ============================================================
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService < ApplicationDbContext());
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>(); // 👈 ¡AQUÍ ESTÁ EL PUNTO Y COMA!
 
     try
     {
-        // ✅ Solo verificar que la conexión funciona
         var canConnect = await dbContext.Database.CanConnectAsync();
         if (canConnect)
         {
             Console.WriteLine("✅ Conexión a Supabase exitosa");
 
-            // Verificar que la tabla Productos existe
             var productosExisten = await dbContext.Productos.AnyAsync();
             Console.WriteLine($"✅ Tabla Productos accesible: {productosExisten}");
         }
@@ -82,7 +71,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // ============================================================
-// 👑 CREAR ADMINISTRADOR POR DEFECTO (SIN MIGRACIONES)
+// 👑 CREAR ADMINISTRADOR POR DEFECTO
 // ============================================================
 using (var scope = app.Services.CreateScope())
 {
