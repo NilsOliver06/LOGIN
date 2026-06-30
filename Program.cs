@@ -28,12 +28,22 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
+// 🔥 CONFIGURACIÓN DE SESSION MEJORADA
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
+// 🔥 CONFIGURACIÓN DE COOKIES
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => false;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
 });
 
 // ============================================================
@@ -47,7 +57,7 @@ var app = builder.Build();
 // ============================================================
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>(); // 👈 ¡AQUÍ ESTÁ EL PUNTO Y COMA!
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
     try
     {
