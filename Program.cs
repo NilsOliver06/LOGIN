@@ -52,26 +52,37 @@ builder.Services.AddSession(options =>
 var app = builder.Build();
 
 // ============================================================
-// APLICAR MIGRACIONES AUTOMÁTICAMENTE AL INICIAR
+// 🔥 VERIFICAR CONEXIÓN (SIN MIGRACIONES AUTOMÁTICAS)
 // ============================================================
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var dbContext = scope.ServiceProvider.GetRequiredService < ApplicationDbContext());
 
     try
     {
-        // Aplicar migraciones
-        dbContext.Database.Migrate();
-        Console.WriteLine("✅ Migraciones aplicadas correctamente");
+        // ✅ Solo verificar que la conexión funciona
+        var canConnect = await dbContext.Database.CanConnectAsync();
+        if (canConnect)
+        {
+            Console.WriteLine("✅ Conexión a Supabase exitosa");
+
+            // Verificar que la tabla Productos existe
+            var productosExisten = await dbContext.Productos.AnyAsync();
+            Console.WriteLine($"✅ Tabla Productos accesible: {productosExisten}");
+        }
+        else
+        {
+            Console.WriteLine("⚠️ No se pudo conectar a Supabase");
+        }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"❌ Error al aplicar migraciones: {ex.Message}");
+        Console.WriteLine($"❌ Error de conexión: {ex.Message}");
     }
 }
 
 // ============================================================
-// 👑 CREAR ADMINISTRADOR POR DEFECTO
+// 👑 CREAR ADMINISTRADOR POR DEFECTO (SIN MIGRACIONES)
 // ============================================================
 using (var scope = app.Services.CreateScope())
 {
