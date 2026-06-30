@@ -178,7 +178,6 @@
 </script>
 
 <style>
-    /* Estilos específicos para Details (no causan error porque están al final) */
     .breadcrumb {
     background: transparent;
     padding: 0;
@@ -197,5 +196,19 @@
 
     .bg-candy-light {
     background: #FFF8F0;
+    }
+
+    /* Clase de apoyo por si no estuviera en tu CSS global */
+    .notificacion-flotante {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #2ecc71;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 9999;
+    font-weight: bold;
     }
 </style>

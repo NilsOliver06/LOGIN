@@ -244,15 +244,15 @@ namespace LOGIN.Controllers
 
             return View(pedidos);
         }
+
         // ============================================================
-        // NUEVOS MÉTODOS - CRUD DE PEDIDOS
+        // NUEVOS MÉTODOS - CRUD DE PEDIDOS (ADMIN)
         // ============================================================
 
         // GET: Tienda/AdminPedidos (Lista de todos los pedidos - solo Admin)
         [HttpGet]
         public async Task<IActionResult> AdminPedidos()
         {
-            // Verificar si es Admin
             var usuarioId = HttpContext.Session.GetString("UsuarioId");
             if (string.IsNullOrEmpty(usuarioId))
                 return RedirectToAction("Login", "Account");
@@ -271,7 +271,7 @@ namespace LOGIN.Controllers
             return View(pedidos);
         }
 
-        // GET: Tienda/Details/5 (Detalles del pedido)
+        // GET: Tienda/Details/5 (Detalles del PEDIDO)
         [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
@@ -291,7 +291,6 @@ namespace LOGIN.Controllers
             if (pedido == null)
                 return NotFound();
 
-            // Verificar que el usuario tenga acceso al pedido
             var usuarioActual = await _context.Usuarios.FindAsync(int.Parse(usuarioId));
             bool esAdmin = usuarioActual?.Email == "admin@candyshoes.pe";
 
@@ -350,7 +349,6 @@ namespace LOGIN.Controllers
                 if (existente == null)
                     return NotFound();
 
-                // Actualizar solo el estado
                 existente.Estado = pedido.Estado;
 
                 _context.Update(existente);
@@ -387,14 +385,12 @@ namespace LOGIN.Controllers
             if (pedido == null)
                 return NotFound();
 
-            // Verificar que el usuario tenga acceso al pedido
             var usuarioActual = await _context.Usuarios.FindAsync(int.Parse(usuarioId));
             bool esAdmin = usuarioActual?.Email == "admin@candyshoes.pe";
 
             if (!esAdmin && pedido.UsuarioId != int.Parse(usuarioId))
                 return RedirectToAction("MisCompras");
 
-            // No permitir cancelar si ya fue entregado
             if (pedido.Estado == EstadoPedido.Entregado)
             {
                 TempData["Error"] = "⚠️ No se puede cancelar un pedido que ya fue entregado";
@@ -422,7 +418,6 @@ namespace LOGIN.Controllers
             if (pedido == null)
                 return NotFound();
 
-            // Verificar que el usuario tenga acceso al pedido
             var usuarioActual = await _context.Usuarios.FindAsync(int.Parse(usuarioId));
             bool esAdmin = usuarioActual?.Email == "admin@candyshoes.pe";
 
@@ -435,10 +430,8 @@ namespace LOGIN.Controllers
                 return RedirectToAction("MisCompras");
             }
 
-            // Cambiar estado a Cancelado
             pedido.Estado = EstadoPedido.Cancelado;
 
-            // Devolver stock a los productos
             foreach (var detalle in pedido.Detalles!)
             {
                 var producto = await _context.Productos.FindAsync(detalle.ProductoId);
@@ -459,7 +452,8 @@ namespace LOGIN.Controllers
             else
                 return RedirectToAction(nameof(MisCompras));
         }
-        // GET: Tienda/PedidoDetails/5 (Detalles del pedido)
+
+        // GET: Tienda/PedidoDetails/5
         [HttpGet]
         public async Task<IActionResult> PedidoDetails(int? id)
         {
@@ -479,7 +473,6 @@ namespace LOGIN.Controllers
             if (pedido == null)
                 return NotFound();
 
-            // Verificar que el usuario tenga acceso al pedido
             var usuarioActual = await _context.Usuarios.FindAsync(int.Parse(usuarioId));
             bool esAdminUser = usuarioActual?.Email == "admin@candyshoes.pe";
 
@@ -487,6 +480,32 @@ namespace LOGIN.Controllers
                 return RedirectToAction("MisCompras");
 
             return View("PedidoDetails", pedido);
+        }
+
+        // ============================================================
+        // 🔥 NUEVA ACCIÓN SEGURA: DETALLES DE UN PRODUCTO
+        // ============================================================
+        [HttpGet]
+        public async Task<IActionResult> ProductoDetails(int? id)
+        {
+            if (!UsuarioLogueado())
+                return RedirectToAction("Login", "Account");
+
+            if (id == null)
+                return NotFound();
+
+            // Busca el zapato directamente de la tabla Productos
+            var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Id == id);
+
+            if (producto == null)
+                return NotFound();
+
+            // Mantiene el total de items en la cesta actualizado en el layout
+            ViewBag.CarritoCount = await _context.CarritoItems
+                .Where(c => c.UsuarioId == GetUsuarioId())
+                .SumAsync(c => c.Cantidad);
+
+            return View(producto);
         }
 
         private bool PedidoExists(int id)
