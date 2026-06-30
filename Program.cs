@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using LOGIN.Data;
 using LOGIN.Models;
-using Microsoft.AspNetCore.DataProtection; // 👈 Asegura esta directiva para las llaves de cifrado
-using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,12 +26,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
-// 🛡️ SOLUCIÓN DEFINITIVA PARA EL "ERROR UNPROTECTING THE SESSION COOKIE"
-// Hace que las llaves de cifrado persistan en el disco y sobrevivan a los reinicios de Render
-builder.Services.AddDataProtection()
-    .PersistKeysToFileSystem(new DirectoryInfo(@"/app/DataProtection-Keys"));
-
-// 🔥 CONFIGURACIÓN DE SESSION MEJORADA 
+// 🔥 CONFIGURACIÓN DE SESSION SEGURO (Sin persistencia física para evitar errores)
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -139,7 +132,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseSession(); // El uso de sesión debe ir estrictamente antes de Authorization
+app.UseSession(); // Ejecutar estrictamente antes de Authorization
 app.UseAuthorization();
 
 // ============================================================
