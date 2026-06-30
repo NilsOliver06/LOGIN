@@ -7,43 +7,44 @@
 
 <div class="container">
     <!-- ============================================================ -->
-    <!-- 🔍 BUSCADOR + CARRITO (sin título) -->
+    <!-- 🔍 BUSCADOR + CARRITO (carrito a la izquierda) -->
     <!-- ============================================================ -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="buscador-wrapper">
+                <!-- Carrito a la izquierda -->
+                <a asp-action="Carrito" class="btn btn-candy position-relative btn-carrito-header">
+                    <i class="fas fa-shopping-cart me-2"></i>Carrito
+                    <span class="cart-badge" id="cartBadge">
+                        @{
+                            var count = 0;
+                            if (!string.IsNullOrEmpty(usuarioId))
+                            {
+                                try
+                                {
+                                    using var scope = Context.RequestServices.CreateScope();
+                                    var db = scope.ServiceProvider.GetService<LOGIN.Data.ApplicationDbContext>();
+                                    var userId = int.Parse(usuarioId);
+                                    count = db?.CarritoItems.Where(c => c.UsuarioId == userId).Sum(c => c.Cantidad) ?? 0;
+                                }
+                                catch { }
+                            }
+                        }
+                        @count
+                    </span>
+                </a>
+
+                <!-- Buscador con limpiar dentro -->
                 <div class="buscador-input-group">
                     <i class="fas fa-search buscador-icon"></i>
                     <input type="text" id="buscadorInput" class="buscador-input"
                            placeholder="Buscar por nombre o descripción..."
                            autocomplete="off" />
+                    <button id="limpiarBusqueda" class="btn-limpiar-input" title="Limpiar búsqueda">
+                        <i class="fas fa-times"></i>
+                    </button>
                     <button id="buscadorBtn" class="buscador-btn">
                         <i class="fas fa-search"></i>
-                    </button>
-                </div>
-                <div class="buscador-extra">
-                    <a asp-action="Carrito" class="btn btn-candy position-relative btn-carrito-header">
-                        <i class="fas fa-shopping-cart me-2"></i>Carrito
-                        <span class="cart-badge" id="cartBadge">
-                            @{
-                                var count = 0;
-                                if (!string.IsNullOrEmpty(usuarioId))
-                                {
-                                    try
-                                    {
-                                        using var scope = Context.RequestServices.CreateScope();
-                                        var db = scope.ServiceProvider.GetService<LOGIN.Data.ApplicationDbContext>();
-                                        var userId = int.Parse(usuarioId);
-                                        count = db?.CarritoItems.Where(c => c.UsuarioId == userId).Sum(c => c.Cantidad) ?? 0;
-                                    }
-                                    catch { }
-                                }
-                            }
-                            @count
-                        </span>
-                    </a>
-                    <button id="limpiarBusqueda" class="btn-limpiar-icon" title="Limpiar búsqueda">
-                        <i class="fas fa-times"></i>
                     </button>
                 </div>
             </div>
