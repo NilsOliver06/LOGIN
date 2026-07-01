@@ -22,6 +22,11 @@
                     <button id="limpiarBusqueda" class="btn-limpiar-input" title="Limpiar búsqueda">
                         <i class="fas fa-times"></i>
                     </button>
+
+                    <button id="btnMicrofono" class="btn-microfono-busqueda" title="Buscar por voz">
+                        <i class="fas fa-microphone" id="iconoMicrofono"></i>
+                    </button>
+
                     <button id="buscadorBtn" class="buscador-btn">
                         <i class="fas fa-search"></i>
                     </button>
@@ -131,6 +136,44 @@
     </div>
 </div>
 
+<style>
+    .btn-microfono-busqueda {
+        background: none;
+        border: none;
+        color: #a0a0a0;
+        padding: 0 10px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: color 0.2s ease, transform 0.1s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .btn-microfono-busqueda:hover {
+            color: #FF6B6B;
+            transform: scale(1.1);
+        }
+
+    /* Clase animada para cuando el micrófono esté activo escuchando */
+    .microfono-activo {
+        color: #dc3545 !important;
+        animation: pulsoMicrofono 1.2s infinite alternate;
+    }
+
+    @@keyframes pulsoMicrofono {
+        from {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        to {
+            transform: scale(1.2);
+            opacity: 0.7;
+        }
+    }
+</style>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -186,6 +229,63 @@
     buscarProductos();
     $('#buscadorInput').focus();
     });
+
+    // ============================================================
+    // 🎙️ INTEGRACIÓN DE WEB SPEECH API (BÚSQUEDA POR VOZ)
+    // ============================================================
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+    // Ocultar o deshabilitar si el navegador no lo soporta (ej. Internet Explorer viejo)
+    $('#btnMicrofono').hide();
+    console.log("Web Speech API no es soportada por este navegador.");
+    } else {
+    var recognition = new SpeechRecognition();
+    recognition.lang = 'es-ES'; // Configurado en español nativo
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    // Al hacer clic en el micrófono
+    $('#btnMicrofono').click(function() {
+    if ($('#iconoMicrofono').hasClass('microfono-activo')) {
+    recognition.stop();
+    } else {
+    recognition.start();
+    }
+    });
+
+    // Cuando empieza a escuchar
+    recognition.onstart = function() {
+    $('#iconoMicrofono').addClass('microfono-activo');
+    $('#buscadorInput').attr('placeholder', 'Escuchando tu voz...');
+    };
+
+    // En caso de error o si se detiene el dictado
+    recognition.onend = function() {
+    $('#iconoMicrofono').removeClass('microfono-activo');
+    $('#buscadorInput').attr('placeholder', 'Buscar por nombre o descripción...');
+    };
+
+    // Al procesar con éxito la voz y transcribirla
+    recognition.onresult = function(event) {
+    var textoVoz = event.results[0][0].transcript;
+
+    // Si la API capturó un punto al final, lo removemos para una búsqueda más limpia
+    if(textoVoz.endsWith('.')) {
+    textoVoz = textoVoz.slice(0, -1);
+    }
+
+    // Inyectar el texto en el input, disparar la búsqueda y mostrar notificación
+    $('#buscadorInput').val(textoVoz);
+    buscarProductos();
+    mostrarNotificacion('🎙️ Buscando por voz: "' + textoVoz + '"');
+    };
+
+    recognition.onerror = function(event) {
+    console.error("Error de reconocimiento de voz: ", event.error);
+    $('#iconoMicrofono').removeClass('microfono-activo');
+    };
+    }
 
     // ============================================================
     // 🛒 AGREGAR AL CARRITO

@@ -308,7 +308,7 @@ body {
     }
 }
 /* ============================================================
-   🔍 BUSCADOR PREMIUM (CARRITO IZQUIERDA + LIMPIAR DENTRO)
+    🔍 BUSCADOR PREMIUM (CARRITO IZQUIERDA + LIMPIAR DENTRO)
    ============================================================ */
 
 .buscador-wrapper {
@@ -324,7 +324,7 @@ body {
 }
 
 /* ============================================================
-   🛒 CARRITO A LA IZQUIERDA
+    🛒 CARRITO A LA IZQUIERDA
    ============================================================ */
 
 .btn-carrito-header {
@@ -334,7 +334,7 @@ body {
 }
 
 /* ============================================================
-   🔍 INPUT GROUP (con limpiar dentro)
+    🔍 INPUT GROUP (con limpiar dentro)
    ============================================================ */
 
 .buscador-input-group {
@@ -356,7 +356,8 @@ body {
 
 .buscador-input {
     flex: 1;
-    padding: 12px 90px 12px 46px; /* Espacio para el botón limpiar + buscar */
+    /* Aumentado a 130px de espacio derecho para que entren Limpiar, Microfono y Lupa sin encimarse */
+    padding: 12px 130px 12px 46px;
     border: 2px solid #F0F0F0;
     border-radius: 50px;
     font-family: 'Poppins', sans-serif;
@@ -379,12 +380,12 @@ body {
     }
 
 /* ============================================================
-   🗑️ BOTÓN LIMPIAR DENTRO DEL INPUT
+    🗑️ BOTÓN LIMPIAR DENTRO DEL INPUT
    ============================================================ */
 
 .btn-limpiar-input {
     position: absolute;
-    right: 60px; /* Espacio para el botón de buscar */
+    right: 95px; /* Se movió a la izquierda para dejarle espacio al micrófono */
     background: none;
     border: none;
     color: #C0C0C0;
@@ -405,7 +406,52 @@ body {
     }
 
 /* ============================================================
-   🔍 BOTÓN DE BÚSQUEDA (lupita)
+    🎙️ NUEVO: BOTÓN DE MICROFONO (WEB SPEECH API)
+   ============================================================ */
+
+.btn-microfono-busqueda {
+    position: absolute;
+    right: 60px; /* Posicionado exactamente donde marcaste con el círculo azul */
+    background: none;
+    border: none;
+    color: #B0B0B0;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .btn-microfono-busqueda:hover {
+        color: #FF6B6B;
+        background: rgba(255, 107, 107, 0.08);
+        transform: scale(1.1);
+    }
+
+/* Animación de parpadeo suave al estar escuchando tu voz */
+.microfono-activo {
+    color: #e63946 !important;
+    animation: pulsoMicrofono 1.2s infinite alternate;
+}
+
+@keyframes pulsoMicrofono {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(1.2);
+        opacity: 0.7;
+    }
+}
+
+/* ============================================================
+    🔍 BOTÓN DE BÚSQUEDA (lupita)
    ============================================================ */
 
 .buscador-btn {
@@ -436,7 +482,7 @@ body {
     }
 
 /* ============================================================
-   📱 RESPONSIVE
+    📱 RESPONSIVE
    ============================================================ */
 
 @media (max-width: 768px) {
@@ -455,11 +501,15 @@ body {
     }
 
     .buscador-input {
-        padding: 12px 80px 12px 46px;
+        padding: 12px 120px 12px 46px;
     }
 
     .btn-limpiar-input {
-        right: 55px;
+        right: 85px;
+    }
+
+    .btn-microfono-busqueda {
+        right: 50px;
     }
 
     .buscador-btn {
