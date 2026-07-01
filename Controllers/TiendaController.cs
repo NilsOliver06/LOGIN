@@ -35,7 +35,8 @@ namespace LOGIN.Controllers
                 .Where(c => c.UsuarioId == GetUsuarioId())
                 .SumAsync(c => c.Cantidad);
 
-            ViewBag.CarritoCount = carritoCount;
+            // Sincronizado exactamente con la variable de la vista (cartCount)
+            ViewBag.CartCount = carritoCount;
             return View(productos);
         }
 
@@ -297,7 +298,6 @@ namespace LOGIN.Controllers
             if (!esAdmin && pedido.UsuarioId != int.Parse(usuarioId))
                 return RedirectToAction("MisCompras");
 
-            // Forzamos explícitamente a que busque la vista "Details" (de pedidos)
             return View("Details", pedido);
         }
 
@@ -483,9 +483,7 @@ namespace LOGIN.Controllers
             return View("PedidoDetails", pedido);
         }
 
-        // ============================================================
-        // 🔥 ACCIÓN REPARADA: DETALLES DE UN PRODUCTO
-        // ============================================================
+        // GET: Tienda/ProductoDetails/5
         [HttpGet]
         public async Task<IActionResult> ProductoDetails(int? id)
         {
@@ -500,11 +498,11 @@ namespace LOGIN.Controllers
             if (producto == null)
                 return NotFound();
 
-            ViewBag.CarritoCount = await _context.CarritoItems
+            // Sincronizado también aquí para mantener consistencia en la vista detallada
+            ViewBag.CartCount = await _context.CarritoItems
                 .Where(c => c.UsuarioId == GetUsuarioId())
                 .SumAsync(c => c.Cantidad);
 
-            // Forzamos explícitamente a buscar el archivo "ProductoDetails"
             return View("ProductoDetails", producto);
         }
 

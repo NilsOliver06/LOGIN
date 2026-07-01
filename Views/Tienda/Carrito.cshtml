@@ -70,7 +70,9 @@
                                                     <i class="fas fa-minus"></i>
                                                 </button>
                                                 <input type="number" class="form-control text-center cantidad-input"
-                                                       data-id="@item.Id" value="@item.Cantidad" min="1" max="@item.Producto?.Cantidad" />
+                                                       data-id="@item.Id"
+                                                       data-max="@item.Producto?.Cantidad"
+                                                       value="@item.Cantidad" min="1" max="@item.Producto?.Cantidad" />
                                                 <button class="btn btn-outline-secondary btn-plus" data-id="@item.Id">
                                                     <i class="fas fa-plus"></i>
                                                 </button>
@@ -120,17 +122,28 @@
 <script>
     function actualizarCarrito() { location.reload(); }
 
+    // Formateador de moneda inteligente basado en la configuración del sistema/navegador
+    const formatter = new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: 'USD' // Cambia a 'PEN' o la moneda de tu BD si lo manejas fijo, o déjalo dinámico
+    });
+
     $(document).ready(function() {
-    function actualizarItem(itemId, nuevaCantidad) {
+    function actualizarItem(itemId, nuevaCantidad, inputElement) {
     $.post('/Tienda/ActualizarCantidad', { itemId: itemId, cantidad: nuevaCantidad })
     .done(function(response) {
     if (response.success) {
     if (response.itemRemoved) {
     actualizarCarrito();
     } else {
-    $('.subtotal[data-id="' + itemId + '"]').text('$' + response.subtotal.toFixed(2));
-    $('#total').text('$' + response.total.toFixed(2));
+    // Formateo dinámico y elegante para evitar romper el diseño visual de la tabla
+    $('.subtotal[data-id="' + itemId + '"]').text(formatter.format(response.subtotal));
+    $('#total').text(formatter.format(response.total));
     $('#cartBadge').text(response.count);
+
+    if (inputElement) {
+    inputElement.val(nuevaCantidad);
+    }
     }
     } else if (response.message) {
     alert(response.message);
@@ -143,8 +156,14 @@
     $('.btn-plus').click(function() {
     var itemId = $(this).data('id');
     var input = $('.cantidad-input[data-id="' + itemId + '"]');
+    var maxStock = parseInt(input.data('max')) || 999;
     var nuevaCantidad = parseInt(input.val()) + 1;
-    actualizarItem(itemId, nuevaCantidad);
+
+    if (nuevaCantidad <= maxStock) {
+    actualizarItem(itemId, nuevaCantidad, input);
+    } else {
+    alert('No puedes agregar más unidades de las disponibles en stock.');
+    }
     });
 
     $('.btn-minus').click(function() {
@@ -152,15 +171,24 @@
     var input = $('.cantidad-input[data-id="' + itemId + '"]');
     var nuevaCantidad = parseInt(input.val()) - 1;
     if (nuevaCantidad > 0) {
-    actualizarItem(itemId, nuevaCantidad);
+    actualizarItem(itemId, nuevaCantidad, input);
     }
     });
 
     $('.cantidad-input').change(function() {
     var itemId = $(this).data('id');
+    var maxStock = parseInt($(this).data('max')) || 999;
     var nuevaCantidad = parseInt($(this).val());
-    if (nuevaCantidad > 0) {
-    actualizarItem(itemId, nuevaCantidad);
+
+    if (isNaN(nuevaCantidad) || nuevaCantidad <= 0) {
+    $(this).val(1);
+    actualizarItem(itemId, 1, $(this));
+    } else if (nuevaCantidad > maxStock) {
+    alert('La cantidad ingresada supera el stock disponible.');
+    $(this).val(maxStock);
+    actualizarItem(itemId, maxStock, $(this));
+    } else {
+    actualizarItem(itemId, nuevaCantidad, $(this));
     }
     });
 

@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Tienda - Candy Shoes";
-    var usuarioId = Context.Session.GetString("UsuarioId");
+    var cartCount = ViewBag.CartCount ?? 0;
 }
 
 <div class="container">
@@ -11,23 +11,7 @@
             <div class="buscador-wrapper">
                 <a asp-action="Carrito" class="btn btn-candy position-relative btn-carrito-header">
                     <i class="fas fa-shopping-cart me-2"></i>Carrito
-                    <span class="cart-badge" id="cartBadge">
-                        @{
-                            var count = 0;
-                            if (!string.IsNullOrEmpty(usuarioId))
-                            {
-                                try
-                                {
-                                    using var scope = Context.RequestServices.CreateScope();
-                                    var db = scope.ServiceProvider.GetService<LOGIN.Data.ApplicationDbContext>();
-                                    var userId = int.Parse(usuarioId);
-                                    count = db?.CarritoItems.Where(c => c.UsuarioId == userId).Sum(c => c.Cantidad) ?? 0;
-                                }
-                                catch { }
-                            }
-                        }
-                        @count
-                    </span>
+                    <span class="cart-badge" id="cartBadge">@cartCount</span>
                 </a>
 
                 <div class="buscador-input-group">
@@ -86,13 +70,10 @@
                             </div>
                         }
 
-                        <!-- ============================================================ -->
-                        <!-- 📷 IMAGEN DEL PRODUCTO (NUEVO) -->
-                        <!-- ============================================================ -->
-                        <div class="card-img-top text-center pt-4 bg-candy-light">
+                        <div class="card-img-top text-center pt-4 bg-candy-light" style="min-height: 200px; display: flex; align-items: center; justify-content: center;">
                             @if (!string.IsNullOrEmpty(producto.ImagenUrl))
                             {
-                                <img src="@producto.ImagenUrl" alt="@producto.Nombre" style="max-height: 180px; width: 100%; object-fit: contain; padding: 10px;" />
+                                <img src="@producto.ImagenUrl" alt="@producto.Nombre" style="max-height: 180px; width: 100%; object-fit: contain; padding: 10px;" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fas fa-shoe-prints\' style=\'font-size: 5rem; color: #FF6B6B;\'></i>';" />
                             }
                             else
                             {
@@ -154,7 +135,7 @@
 <script>
     $(document).ready(function() {
     // ============================================================
-    // 🔍 BÚSQUEDA INSTANTÁNEA + BOTÓN
+    // 🔍 BÚSQUEDA INSTANTÁNEA
     // ============================================================
     function buscarProductos() {
     var termino = $('#buscadorInput').val().toLowerCase().trim();

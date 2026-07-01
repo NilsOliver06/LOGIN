@@ -88,13 +88,16 @@ namespace LOGIN.Controllers
         // ============================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Producto producto, IFormFile imagen)
+        public async Task<IActionResult> Create(Producto producto, IFormFile? imagen)
         {
             if (!UsuarioLogueado())
                 return RedirectToAction("Login", "Account");
 
             if (!EsAdmin())
                 return RedirectToAction("Index", "Home");
+
+            // 🔥 CORRECCIÓN: Removemos 'imagen' del ModelState para evitar congelamientos
+            ModelState.Remove("imagen");
 
             if (ModelState.IsValid)
             {
@@ -104,7 +107,6 @@ namespace LOGIN.Controllers
                     var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "productos");
                     Directory.CreateDirectory(uploadsFolder);
 
-                    // 🔥 Usar el nombre original del archivo
                     var fileName = imagen.FileName;
                     var filePath = Path.Combine(uploadsFolder, fileName);
 
@@ -160,7 +162,7 @@ namespace LOGIN.Controllers
         // ============================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Producto producto, IFormFile imagen)
+        public async Task<IActionResult> Edit(int id, Producto producto, IFormFile? imagen)
         {
             if (!UsuarioLogueado())
                 return RedirectToAction("Login", "Account");
@@ -171,6 +173,9 @@ namespace LOGIN.Controllers
             if (id != producto.Id)
                 return NotFound();
 
+            // 🔥 CORRECCIÓN: Forzamos la limpieza de la propiedad del formulario para validar datos puros
+            ModelState.Remove("imagen");
+
             if (ModelState.IsValid)
             {
                 try
@@ -179,7 +184,7 @@ namespace LOGIN.Controllers
                     if (existente == null)
                         return NotFound();
 
-                    // 📷 Guardar nueva imagen con el nombre original
+                    // 📷 Guardar nueva imagen si el usuario subió una
                     if (imagen != null && imagen.Length > 0)
                     {
                         var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "productos");
@@ -203,6 +208,7 @@ namespace LOGIN.Controllers
 
                         existente.ImagenUrl = $"/images/productos/{fileName}";
                     }
+                    // Si no subió una nueva, mantiene automáticamente la URL que ya tenía en Supabase
 
                     existente.Nombre = producto.Nombre;
                     existente.Descripcion = producto.Descripcion;

@@ -16,6 +16,8 @@
                 </div>
 
                 <form asp-action="ConfirmarPedido" method="post" id="checkoutForm">
+                    @Html.AntiForgeryToken() @* 🔐 Blindaje crucial contra ataques CSRF y errores 400 en Render *@
+
                     <div class="row g-4">
                         <!-- Columna izquierda: Datos del pedido -->
                         <div class="col-md-7">
