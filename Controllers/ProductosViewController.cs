@@ -2,16 +2,24 @@
 using Microsoft.EntityFrameworkCore;
 using LOGIN.Data;
 using LOGIN.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace LOGIN.Controllers
 {
     public class ProductosViewController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment; // 👈 NUEVO
 
-        public ProductosViewController(ApplicationDbContext context)
+        // ============================================================
+        // 🔧 CONSTRUCTOR ACTUALIZADO
+        // ============================================================
+        public ProductosViewController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment; // 👈 NUEVO
         }
 
         // ============================================================
@@ -79,11 +87,11 @@ namespace LOGIN.Controllers
         }
 
         // ============================================================
-        // ➕ POST: ProductosView/Create
+        // ➕ POST: ProductosView/Create (CON IMAGEN)
         // ============================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Producto producto)
+        public async Task<IActionResult> Create(Producto producto, IFormFile imagen) // 👈 NUEVO: IFormFile imagen
         {
             if (!UsuarioLogueado())
                 return RedirectToAction("Login", "Account");
@@ -93,6 +101,23 @@ namespace LOGIN.Controllers
 
             if (ModelState.IsValid)
             {
+                // 📷 Guardar imagen si se subió
+                if (imagen != null && imagen.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "productos");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    var fileName = $"{producto.Nombre.Replace(" ", "-").ToLower()}.jpg";
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imagen.CopyToAsync(fileStream);
+                    }
+
+                    producto.ImagenUrl = $"/images/productos/{fileName}";
+                }
+
                 producto.FechaRegistro = DateTime.UtcNow;
                 _context.Add(producto);
                 await _context.SaveChangesAsync();
@@ -124,11 +149,11 @@ namespace LOGIN.Controllers
         }
 
         // ============================================================
-        // ✏️ POST: ProductosView/Edit/5
+        // ✏️ POST: ProductosView/Edit/5 (CON IMAGEN)
         // ============================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Producto producto)
+        public async Task<IActionResult> Edit(int id, Producto producto, IFormFile imagen) // 👈 NUEVO: IFormFile imagen
         {
             if (!UsuarioLogueado())
                 return RedirectToAction("Login", "Account");
@@ -146,6 +171,23 @@ namespace LOGIN.Controllers
                     var existente = await _context.Productos.FindAsync(id);
                     if (existente == null)
                         return NotFound();
+
+                    // 📷 Guardar nueva imagen si se subió
+                    if (imagen != null && imagen.Length > 0)
+                    {
+                        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "productos");
+                        Directory.CreateDirectory(uploadsFolder);
+
+                        var fileName = $"{producto.Nombre.Replace(" ", "-").ToLower()}.jpg";
+                        var filePath = Path.Combine(uploadsFolder, fileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await imagen.CopyToAsync(fileStream);
+                        }
+
+                        existente.ImagenUrl = $"/images/productos/{fileName}";
+                    }
 
                     existente.Nombre = producto.Nombre;
                     existente.Descripcion = producto.Descripcion;

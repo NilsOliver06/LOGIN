@@ -57,7 +57,20 @@
                             <span asp-validation-for="Precio" class="text-danger small"></span>
                         </div>
                     </div>
-
+                    <!-- 📷 IMAGEN DEL PRODUCTO -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-image text-candy-primary me-1"></i>Cambiar Imagen
+                        </label>
+                        <input type="file" name="imagen" class="form-control rounded-3" accept=".jpg,.jpeg,.png" />
+                        <small class="text-muted">Dejar vacío para mantener la imagen actual</small>
+                        @if (!string.IsNullOrEmpty(Model.ImagenUrl))
+                        {
+                            <div class="mt-2">
+                                <img src="@Model.ImagenUrl" alt="@Model.Nombre" style="max-height: 100px; border-radius: 8px;" />
+                            </div>
+                        }
+                    </div>
                     <hr class="my-4" />
 
                     <div class="d-flex gap-2 justify-content-end">

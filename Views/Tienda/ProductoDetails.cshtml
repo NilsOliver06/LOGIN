@@ -24,10 +24,19 @@
                 </nav>
 
                 <div class="row g-4">
-                    <!-- Imagen / Icono del producto -->
+                    <!-- ============================================================ -->
+                    <!-- 📷 IMAGEN DEL PRODUCTO (NUEVO) -->
+                    <!-- ============================================================ -->
                     <div class="col-md-5 text-center">
                         <div class="bg-candy-light rounded-4 p-5" style="background: linear-gradient(135deg, #FFF8F0 0%, #FFE8D6 100%);">
-                            <i class="fas fa-shoe-prints" style="font-size: 8rem; color: #FF6B6B;"></i>
+                            @if (!string.IsNullOrEmpty(Model.ImagenUrl))
+                            {
+                                <img src="@Model.ImagenUrl" alt="@Model.Nombre" style="max-height: 350px; width: 100%; object-fit: contain; border-radius: 12px;" />
+                            }
+                            else
+                            {
+                                <i class="fas fa-shoe-prints" style="font-size: 8rem; color: #FF6B6B;"></i>
+                            }
                         </div>
                     </div>
 

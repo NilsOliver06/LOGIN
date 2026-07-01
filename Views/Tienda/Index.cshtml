@@ -86,8 +86,18 @@
                             </div>
                         }
 
+                        <!-- ============================================================ -->
+                        <!-- 📷 IMAGEN DEL PRODUCTO (NUEVO) -->
+                        <!-- ============================================================ -->
                         <div class="card-img-top text-center pt-4 bg-candy-light">
-                            <i class="fas fa-shoe-prints" style="font-size: 5rem; color: #FF6B6B;"></i>
+                            @if (!string.IsNullOrEmpty(producto.ImagenUrl))
+                            {
+                                <img src="@producto.ImagenUrl" alt="@producto.Nombre" style="max-height: 180px; width: 100%; object-fit: contain; padding: 10px;" />
+                            }
+                            else
+                            {
+                                <i class="fas fa-shoe-prints" style="font-size: 5rem; color: #FF6B6B;"></i>
+                            }
                         </div>
 
                         <div class="card-body">
