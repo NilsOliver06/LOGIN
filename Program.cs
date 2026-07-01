@@ -47,10 +47,17 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.Secure = CookieSecurePolicy.Always; // Evita que los navegadores bloqueen la sesión en Render
 });
 
-// 🔥 NUEVO: Persistencia de claves para evitar el error de "Unprotecting session cookie"
-var keysFolder = Path.Combine(builder.Environment.ContentRootPath, "temp-keys");
+// 🔥 SOLUCIÓN DEFINITIVA DE PERMISOS EN RENDER:
+// Guardamos las llaves al lado del binario ejecutable donde sí hay permisos de escritura seguros
+var keysFolder = Path.Combine(AppContext.BaseDirectory, "temp-keys");
+
+if (!Directory.Exists(keysFolder))
+{
+    Directory.CreateDirectory(keysFolder);
+}
+
 builder.Services.AddDataProtection()
-    .PersistKeysToFileSystem(new DirectoryInfo(keysFolder)) // Carpeta interna del proyecto (estable)
+    .PersistKeysToFileSystem(new DirectoryInfo(keysFolder))
     .SetApplicationName("CandyShoes");
 
 // ============================================================
@@ -141,9 +148,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-// 🔥 NUEVO: Activa las políticas de cookies y sesiones de forma ordenada
+// 🔥 IMPORTANTE: Activa las políticas de cookies y sesiones antes de la autorización
 app.UseCookiePolicy();
-app.UseSession(); // Ejecutar estrictamente antes de Authorization
+app.UseSession();
 
 app.UseAuthorization();
 
