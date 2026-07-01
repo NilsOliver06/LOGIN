@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using LOGIN.Data;
 using LOGIN.Models;
 using Microsoft.AspNetCore.DataProtection;
-using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,18 +46,9 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.Secure = CookieSecurePolicy.Always; // Evita que los navegadores bloqueen la sesión en Render
 });
 
-// 🔥 SOLUCIÓN DEFINITIVA DE PERMISOS EN RENDER:
-// Guardamos las llaves al lado del binario ejecutable donde sí hay permisos de escritura seguros
-var keysFolder = Path.Combine(AppContext.BaseDirectory, "temp-keys");
-
-if (!Directory.Exists(keysFolder))
-{
-    Directory.CreateDirectory(keysFolder);
-}
-
-builder.Services.AddDataProtection()
-    .PersistKeysToFileSystem(new DirectoryInfo(keysFolder))
-    .SetApplicationName("CandyShoes");
+// 🔥 SOLUCIÓN ESTABLE PARA EL STATUS 139:
+// Eliminamos la llamada efímera que corrompía la memoria nativa y dejamos que .NET maneje de forma estándar las llaves en el contenedor
+builder.Services.AddDataProtection();
 
 // ============================================================
 // CONFIGURACIÓN DE LA APLICACIÓN
@@ -148,7 +138,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-// 🔥 IMPORTANTE: Activa las políticas de cookies y sesiones antes de la autorización
+// 🔥 IMPORTANTE: Activa las políticas de cookies y sesiones de forma ordenada
 app.UseCookiePolicy();
 app.UseSession();
 
