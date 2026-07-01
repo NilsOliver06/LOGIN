@@ -264,7 +264,7 @@ body {
 }
 
 .producto-card .card-img-top {
-    background: linear-gradient(135deg, #FFF8F0 0%, #FFE8D6 100%);
+    background: #ffffff !important; /* Cambiado de gradiente a blanco puro */
     padding: 20px 0 !important;
     border-bottom: 3px solid #FF6B6B;
 }
