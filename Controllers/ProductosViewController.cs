@@ -11,15 +11,12 @@ namespace LOGIN.Controllers
     public class ProductosViewController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _webHostEnvironment; // 👈 NUEVO
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        // ============================================================
-        // 🔧 CONSTRUCTOR ACTUALIZADO
-        // ============================================================
         public ProductosViewController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
-            _webHostEnvironment = webHostEnvironment; // 👈 NUEVO
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // ============================================================
@@ -91,7 +88,7 @@ namespace LOGIN.Controllers
         // ============================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Producto producto, IFormFile imagen) // 👈 NUEVO: IFormFile imagen
+        public async Task<IActionResult> Create(Producto producto, IFormFile imagen)
         {
             if (!UsuarioLogueado())
                 return RedirectToAction("Login", "Account");
@@ -101,14 +98,24 @@ namespace LOGIN.Controllers
 
             if (ModelState.IsValid)
             {
-                // 📷 Guardar imagen si se subió
+                // 📷 Guardar imagen con el nombre original
                 if (imagen != null && imagen.Length > 0)
                 {
                     var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "productos");
                     Directory.CreateDirectory(uploadsFolder);
 
-                    var fileName = $"{producto.Nombre.Replace(" ", "-").ToLower()}.jpg";
+                    // 🔥 Usar el nombre original del archivo
+                    var fileName = imagen.FileName;
                     var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    // Si ya existe, agregar un sufijo con timestamp
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        var nameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
+                        var extension = Path.GetExtension(fileName);
+                        fileName = $"{nameWithoutExt}_{DateTime.Now.Ticks}{extension}";
+                        filePath = Path.Combine(uploadsFolder, fileName);
+                    }
 
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
@@ -153,7 +160,7 @@ namespace LOGIN.Controllers
         // ============================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Producto producto, IFormFile imagen) // 👈 NUEVO: IFormFile imagen
+        public async Task<IActionResult> Edit(int id, Producto producto, IFormFile imagen)
         {
             if (!UsuarioLogueado())
                 return RedirectToAction("Login", "Account");
@@ -172,14 +179,22 @@ namespace LOGIN.Controllers
                     if (existente == null)
                         return NotFound();
 
-                    // 📷 Guardar nueva imagen si se subió
+                    // 📷 Guardar nueva imagen con el nombre original
                     if (imagen != null && imagen.Length > 0)
                     {
                         var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "productos");
                         Directory.CreateDirectory(uploadsFolder);
 
-                        var fileName = $"{producto.Nombre.Replace(" ", "-").ToLower()}.jpg";
+                        var fileName = imagen.FileName;
                         var filePath = Path.Combine(uploadsFolder, fileName);
+
+                        if (System.IO.File.Exists(filePath))
+                        {
+                            var nameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
+                            var extension = Path.GetExtension(fileName);
+                            fileName = $"{nameWithoutExt}_{DateTime.Now.Ticks}{extension}";
+                            filePath = Path.Combine(uploadsFolder, fileName);
+                        }
 
                         using (var fileStream = new FileStream(filePath, FileMode.Create))
                         {
