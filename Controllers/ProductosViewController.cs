@@ -2,21 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using LOGIN.Data;
 using LOGIN.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using System.IO;
 
 namespace LOGIN.Controllers
 {
     public class ProductosViewController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductosViewController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public ProductosViewController(ApplicationDbContext context)
         {
             _context = context;
-            _webHostEnvironment = webHostEnvironment;
         }
 
         // ============================================================
@@ -84,11 +80,11 @@ namespace LOGIN.Controllers
         }
 
         // ============================================================
-        // ➕ POST: ProductosView/Create (CON IMAGEN)
+        // ➕ POST: ProductosView/Create (MÉTODO OPTIMIZADO POR URL)
         // ============================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Producto producto, IFormFile? imagen)
+        public async Task<IActionResult> Create(Producto producto)
         {
             if (!UsuarioLogueado())
                 return RedirectToAction("Login", "Account");
@@ -96,38 +92,17 @@ namespace LOGIN.Controllers
             if (!EsAdmin())
                 return RedirectToAction("Index", "Home");
 
-            // 🔥 CORRECCIÓN: Removemos 'imagen' del ModelState para evitar congelamientos
-            ModelState.Remove("imagen");
-
             if (ModelState.IsValid)
             {
-                // 📷 Guardar imagen con el nombre original
-                if (imagen != null && imagen.Length > 0)
+                // Si la URL viene vacía o con espacios, guardamos null
+                if (string.IsNullOrWhiteSpace(producto.ImagenUrl))
                 {
-                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "productos");
-                    Directory.CreateDirectory(uploadsFolder);
-
-                    var fileName = imagen.FileName;
-                    var filePath = Path.Combine(uploadsFolder, fileName);
-
-                    // Si ya existe, agregar un sufijo con timestamp
-                    if (System.IO.File.Exists(filePath))
-                    {
-                        var nameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
-                        var extension = Path.GetExtension(fileName);
-                        fileName = $"{nameWithoutExt}_{DateTime.Now.Ticks}{extension}";
-                        filePath = Path.Combine(uploadsFolder, fileName);
-                    }
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await imagen.CopyToAsync(fileStream);
-                    }
-
-                    producto.ImagenUrl = $"/images/productos/{fileName}";
+                    producto.ImagenUrl = null;
                 }
 
+                // Guardar en formato UTC para compatibilidad total con servidores Linux (Render)
                 producto.FechaRegistro = DateTime.UtcNow;
+
                 _context.Add(producto);
                 await _context.SaveChangesAsync();
                 TempData["Mensaje"] = "✅ Producto creado exitosamente";
@@ -158,11 +133,11 @@ namespace LOGIN.Controllers
         }
 
         // ============================================================
-        // ✏️ POST: ProductosView/Edit/5 (CON IMAGEN)
+        // ✏️ POST: ProductosView/Edit/5 (MÉTODO OPTIMIZADO POR URL)
         // ============================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Producto producto, IFormFile? imagen)
+        public async Task<IActionResult> Edit(int id, Producto producto)
         {
             if (!UsuarioLogueado())
                 return RedirectToAction("Login", "Account");
@@ -173,9 +148,6 @@ namespace LOGIN.Controllers
             if (id != producto.Id)
                 return NotFound();
 
-            // 🔥 CORRECCIÓN: Forzamos la limpieza de la propiedad del formulario para validar datos puros
-            ModelState.Remove("imagen");
-
             if (ModelState.IsValid)
             {
                 try
@@ -184,36 +156,14 @@ namespace LOGIN.Controllers
                     if (existente == null)
                         return NotFound();
 
-                    // 📷 Guardar nueva imagen si el usuario subió una
-                    if (imagen != null && imagen.Length > 0)
-                    {
-                        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "productos");
-                        Directory.CreateDirectory(uploadsFolder);
-
-                        var fileName = imagen.FileName;
-                        var filePath = Path.Combine(uploadsFolder, fileName);
-
-                        if (System.IO.File.Exists(filePath))
-                        {
-                            var nameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
-                            var extension = Path.GetExtension(fileName);
-                            fileName = $"{nameWithoutExt}_{DateTime.Now.Ticks}{extension}";
-                            filePath = Path.Combine(uploadsFolder, fileName);
-                        }
-
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await imagen.CopyToAsync(fileStream);
-                        }
-
-                        existente.ImagenUrl = $"/images/productos/{fileName}";
-                    }
-                    // Si no subió una nueva, mantiene automáticamente la URL que ya tenía en Supabase
-
+                    // Sincronizar propiedades de forma directa
                     existente.Nombre = producto.Nombre;
                     existente.Descripcion = producto.Descripcion;
                     existente.Cantidad = producto.Cantidad;
                     existente.Precio = producto.Precio;
+
+                    // Manejo dinámico del enlace de imagen externo enviado desde la vista
+                    existente.ImagenUrl = string.IsNullOrWhiteSpace(producto.ImagenUrl) ? null : producto.ImagenUrl.Trim();
 
                     _context.Update(existente);
                     await _context.SaveChangesAsync();
