@@ -6,11 +6,14 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card-candy">
+    <div class="col-lg-10">
+        <!-- Ampliado a col-lg-10 para darle más espacio y elegancia a los detalles -->
+        <div class="card-candy p-2 p-md-3">
             <div class="card-body p-4 p-lg-5">
+
+                <!-- 🗺️ BREADCRUMB ESTILIZADO -->
                 <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
+                    <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item">
                             <a asp-action="Index" class="text-decoration-none">
                                 <i class="fas fa-store me-1"></i>Tienda
@@ -22,12 +25,14 @@
                     </ol>
                 </nav>
 
-                <div class="row g-4">
+                <div class="row g-5 align-items-center">
+                    <!-- Añadido un g-5 para un espaciado más fino -->
+                    <!-- 👟 CONTENEDOR DE LA IMAGEN PREMIUM (FUSIÓN BLANCO PURO + HOVER) -->
                     <div class="col-md-5 text-center">
-                        <div class="bg-candy-light rounded-4 p-5" style="background: linear-gradient(135deg, #FFF8F0 0%, #FFE8D6 100%); min-height: 250px; display: flex; align-items: center; justify-content: center;">
+                        <div class="contenedor-imagen-premium">
                             @if (!string.IsNullOrEmpty(Model.ImagenUrl))
                             {
-                                <img src="@Model.ImagenUrl" alt="@Model.Nombre" style="max-height: 350px; width: 100%; object-fit: contain; border-radius: 12px;" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fas fa-shoe-prints\' style=\'font-size: 8rem; color: #FF6B6B;\'></i>';" />
+                                <img src="@Model.ImagenUrl" alt="@Model.Nombre" class="img-producto-premium" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fas fa-shoe-prints\' style=\'font-size: 8rem; color: #FF6B6B;\'></i>';" />
                             }
                             else
                             {
@@ -36,87 +41,96 @@
                         </div>
                     </div>
 
+                    <!-- 📝 CONTENEDOR DE INFORMACIÓN -->
                     <div class="col-md-7">
-                        <h1 class="fw-bold display-6">@Model.Nombre</h1>
+                        <h1 class="fw-bold text-candy-dark mb-3">@Model.Nombre</h1>
 
-                        <div class="mt-3">
-                            <span class="badge bg-candy-primary rounded-pill px-4 py-2 fs-6">
+                        <!-- BADGES CON LOOK MODERNO -->
+                        <div class="d-flex align-items-center gap-2 mb-4">
+                            <span class="precio-badge-premium">
                                 @Model.Precio.ToString("C")
                             </span>
                             @if (Model.Cantidad > 0)
                             {
-                                <span class="badge bg-success rounded-pill px-4 py-2 ms-2">
+                                <span class="badge bg-success rounded-pill px-3 py-2 fs-7 shadow-sm">
                                     <i class="fas fa-check-circle me-1"></i>Disponible
                                 </span>
                             }
                             else
                             {
-                                <span class="badge bg-danger rounded-pill px-4 py-2 ms-2">
+                                <span class="badge bg-danger rounded-pill px-3 py-2 fs-7 shadow-sm">
                                     <i class="fas fa-times-circle me-1"></i>Agotado
                                 </span>
                             }
                         </div>
 
-                        <hr />
+                        <hr class="opacity-10 my-4" />
 
-                        <h6 class="fw-bold">
+                        <!-- SECCIÓN DESCRIPCIÓN -->
+                        <h6 class="fw-bold text-candy-dark mb-2">
                             <i class="fas fa-align-left me-2 text-candy-primary"></i>Descripción
                         </h6>
-                        <p class="text-muted">
+                        <p class="text-muted leading-relaxed mb-4">
                             @(Model.Descripcion ?? "Sin descripción disponible")
                         </p>
 
-                        <div class="row g-3 mt-3">
+                        <!-- TARJETAS DE DATOS MINIMALISTAS -->
+                        <div class="row g-3 mt-2">
                             <div class="col-6">
-                                <div class="bg-light rounded-3 p-3 text-center">
-                                    <small class="text-muted">Stock disponible</small>
-                                    <h4 class="fw-bold @(Model.Cantidad == 0 ? "text-danger" : Model.Cantidad < 5 ? "text-warning" : "text-success")">
-                                        @Model.Cantidad
+                                <div class="info-card-premium">
+                                    <span class="info-card-title">Stock disponible</span>
+                                    <h4 class="fw-bold m-0 mt-1 @(Model.Cantidad == 0 ? "text-danger" : Model.Cantidad < 5 ? "text-warning" : "text-success")">
+                                        <i class="fas fa-boxes me-1 small"></i> @Model.Cantidad
                                     </h4>
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="bg-light rounded-3 p-3 text-center">
-                                    <small class="text-muted">Registrado</small>
-                                    <h6 class="fw-bold">@Model.FechaRegistro.ToString("dd/MM/yyyy")</h6>
+                                <div class="info-card-premium">
+                                    <span class="info-card-title">Registrado</span>
+                                    <h6 class="fw-bold text-candy-dark m-0 mt-2">
+                                        <i class="fas fa-calendar-alt me-1 text-muted"></i> @Model.FechaRegistro.ToString("dd/MM/yyyy")
+                                    </h6>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="d-flex gap-2 mt-4">
+                        <!-- 🛒 BOTONES DE ACCIÓN MEJORADOS -->
+                        <div class="d-flex gap-3 mt-5">
                             @if (Model.Cantidad > 0)
                             {
-                                <button class="btn btn-candy btn-lg flex-grow-1 add-to-cart" data-id="@Model.Id" data-nombre="@Model.Nombre">
+                                <button class="btn btn-candy btn-lg flex-grow-1 add-to-cart py-3 shadow" data-id="@Model.Id" data-nombre="@Model.Nombre">
                                     <i class="fas fa-cart-plus me-2"></i>Agregar al Carrito
                                 </button>
                             }
                             else
                             {
-                                <button class="btn btn-secondary btn-lg flex-grow-1" disabled>
+                                <button class="btn btn-secondary btn-lg flex-grow-1 py-3" disabled>
                                     <i class="fas fa-times-circle me-2"></i>Agotado
                                 </button>
                             }
-                            <a asp-action="Index" class="btn btn-candy-outline btn-lg" title="Volver a la tienda">
+                            <a asp-action="Index" class="btn btn-candy-outline btn-lg px-4 d-flex align-items-center justify-content-center" title="Volver a la tienda">
                                 <i class="fas fa-arrow-left"></i>
                             </a>
                         </div>
 
-                        <div class="mt-4 pt-3 border-top">
-                            <div class="d-flex flex-wrap gap-3 text-muted small">
-                                <span>
-                                    <i class="fas fa-truck text-candy-primary me-1"></i>
-                                    Envío a todo el país
-                                </span>
-                                <span>
-                                    <i class="fas fa-undo text-candy-primary me-1"></i>
-                                    Cambios hasta 7 días
-                                </span>
-                                <span>
-                                    <i class="fas fa-shield-alt text-candy-primary me-1"></i>
-                                    Compra segura
-                                </span>
+                        <!-- BENEFICIOS EXTRA -->
+                        <div class="mt-5 pt-4 border-top">
+                            <div class="row g-3 text-muted small row-beneficios">
+                                <div class="col-sm-4 d-flex align-items-center gap-2">
+                                    <div class="beneficio-icon-circle"><i class="fas fa-truck"></i></div>
+                                    <span>Envío a todo el país</span>
+                                </div>
+                                <div class="col-sm-4 d-flex align-items-center gap-2">
+                                    <div class="beneficio-icon-circle"><i class="fas fa-undo"></i></div>
+                                    <span>Cambios hasta 7 días</span>
+                                </div>
+                                <div class="col-sm-4 d-flex align-items-center gap-2">
+                                    <div class="beneficio-icon-circle"><i class="fas fa-shield-alt"></i></div>
+                                    <span>Compra 100% segura</span>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -132,23 +146,18 @@
     var productoId = btn.data('id');
     var nombre = btn.data('nombre');
 
-    // Deshabilitar botón temporalmente
     btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Agregando...');
 
     $.post('/Tienda/AgregarAlCarrito', { productoId: productoId, cantidad: 1 })
     .done(function(response) {
     if (response.success) {
-    // Actualizar badge del carrito
     $('#cartBadge').text(response.count);
 
-    // Feedback visual
     btn.removeClass('btn-candy').addClass('btn-success')
     .html('<i class="fas fa-check me-2"></i>Agregado ✓');
 
-    // Mostrar notificación
     mostrarNotificacion('✓ ' + nombre + ' agregado al carrito');
 
-    // Recargar después de 1.5s para actualizar stock
     setTimeout(function() {
     location.reload();
     }, 1500);
@@ -176,36 +185,131 @@
 </script>
 
 <style>
-    .breadcrumb {
-    background: transparent;
-    padding: 0;
-    margin-bottom: 1.5rem;
-    }
-
+    /* ===== ESTILOS EXCLUSIVOS DETALLES PREMIUM ===== */
     .breadcrumb-item a {
     color: #FF6B6B;
     font-weight: 500;
+    transition: color 0.2s ease;
     }
 
-    .breadcrumb-item.active {
+    .breadcrumb-item a:hover {
+    color: #FF8E53;
+    }
+
+    .text-candy-dark {
     color: #2C3E50;
+    }
+
+    /* 👟 Contenedor de Imagen de Producto Unificado (Fondo Blanco) */
+    .contenedor-imagen-premium {
+    background: #ffffff !important;
+    border: 2px solid #f8f9fa;
+    border-radius: 24px;
+    padding: 30px;
+    min-height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease;
+    }
+
+    .contenedor-imagen-premium:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(255, 107, 107, 0.08);
+    }
+
+    .img-producto-premium {
+    max-height: 340px;
+    width: 100%;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+    }
+
+    .contenedor-imagen-premium:hover .img-producto-premium {
+    transform: scale(1.04) rotate(1deg);
+    }
+
+    /* 🏷️ Badge de Precio Rediseñado */
+    .precio-badge-premium {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 1.25rem;
+    padding: 6px 24px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.2);
+    }
+
+    /* 📊 Tarjetas de Información Mínimas */
+    .info-card-premium {
+    background: #ffffff;
+    border: 1px solid #f1f2f6;
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.01);
+    transition: all 0.3s ease;
+    }
+
+    .info-card-premium:hover {
+    border-color: #ffe8d6;
+    background: #fffcf9;
+    }
+
+    .info-card-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #a0a5b5;
     font-weight: 600;
+    display: block;
     }
 
-    .bg-candy-light {
-    background: #FFF8F0;
+    /* 🛡️ Círculos de los Iconos de Beneficios */
+    .beneficio-icon-circle {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 107, 107, 0.08);
+    color: #FF6B6B;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
     }
 
+    .row-beneficios span {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #5c6b73;
+    }
+
+    /* 🔔 Notificación Flotante con Paleta Candy Shoes */
     .notificacion-flotante {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #2ecc71;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
     color: white;
-    padding: 12px 25px;
-    border-radius: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    padding: 14px 28px;
+    border-radius: 50px;
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
     z-index: 9999;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 0.95rem;
+    animation: slideInUpCustom 0.4s ease;
+    }
+
+    @@keyframes slideInUpCustom {
+    from {
+    transform: translateY(50px);
+    opacity: 0;
+    }
+
+    to {
+    transform: translateY(0);
+    opacity: 1;
+    }
     }
 </style>
