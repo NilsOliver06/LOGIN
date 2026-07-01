@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using LOGIN.Data;
 using LOGIN.Models;
+using Microsoft.AspNetCore.DataProtection;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +28,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
-// 🔥 CONFIGURACIÓN DE SESSION SEGURO (Sin persistencia física para evitar errores)
+// 🔥 CONFIGURACIÓN DE SESSION SEGURO 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -34,15 +36,22 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
     options.Cookie.SameSite = SameSiteMode.Lax;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Obliga el uso de HTTPS en Render
 });
 
-// 🔥 CONFIGURACIÓN DE COOKIES
+// 🔥 CONFIGURACIÓN DE COOKIES MEJORADA
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
     options.CheckConsentNeeded = context => false;
     options.MinimumSameSitePolicy = SameSiteMode.None;
+    options.Secure = CookieSecurePolicy.Always; // Evita que los navegadores bloqueen la sesión en Render
 });
+
+// 🔥 NUEVO: Persistencia de claves para evitar el error de "Unprotecting session cookie"
+var keysFolder = Path.Combine(builder.Environment.ContentRootPath, "temp-keys");
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(keysFolder)) // Carpeta interna del proyecto (estable)
+    .SetApplicationName("CandyShoes");
 
 // ============================================================
 // CONFIGURACIÓN DE LA APLICACIÓN
@@ -132,7 +141,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+// 🔥 NUEVO: Activa las políticas de cookies y sesiones de forma ordenada
+app.UseCookiePolicy();
 app.UseSession(); // Ejecutar estrictamente antes de Authorization
+
 app.UseAuthorization();
 
 // ============================================================
@@ -149,4 +161,5 @@ app.MapControllers();
 // ============================================================
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 Console.WriteLine($"🚀 Iniciando en puerto: {port}");
+
 app.Run($"http://*:{port}");
