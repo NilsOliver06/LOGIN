@@ -11,14 +11,17 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Candy Shoes">
 
+    <!-- Bootstrap 5.3.2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
+    <!-- Estilos Personalizados de la Tienda -->
     <link rel="stylesheet" href="~/css/candy-shoes.css" asp-append-version="true" />
-
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
@@ -159,12 +162,14 @@
         </nav>
     </header>
 
+    <!-- CONTENIDO PRINCIPAL DINÁMICO -->
     <main class="flex-grow-1">
         <div class="container py-4">
             @RenderBody()
         </div>
     </main>
 
+    <!-- PIE DE PÁGINA ACTUALIZADO -->
     <footer class="footer-candy">
         <div class="container">
             <div class="row align-items-center">
@@ -184,18 +189,20 @@
                 </div>
                 <div class="col-md-4 text-center text-md-end">
                     <small>
-                        <i class="fas fa-phone me-1"></i> +51 999 999 999
+                        <i class="fas fa-phone me-1"></i> +591 XXXXXXXX
                         <br>
-                        <i class="fas fa-envelope me-1"></i> info@candyshoes.pe
+                        <i class="fas fa-envelope me-1"></i> info@candyshoes.com
                     </small>
                 </div>
             </div>
         </div>
     </footer>
 
+    <!-- SCRIPTS CORE (Bootstrap Bundle incluye Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <!-- Script de Actualización Asíncrona del Carrito -->
     <script>
         function actualizarContadorCarrito() {
         $.get('/Tienda/GetCarritoCount', function(data) {
@@ -208,6 +215,7 @@
         });
     </script>
 
+    <!-- Registro del Service Worker (PWA) -->
     <script>
         if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {

@@ -1,8 +1,6 @@
 ﻿// ============================================================
 // 🍬👟 CANDY SHOES - SERVICE WORKER
 // ============================================================
-
-const CACHE_NAME = 'candy-shoes-v1';
 const STATIC_CACHE = 'static-v1';
 const DYNAMIC_CACHE = 'dynamic-v1';
 
@@ -13,6 +11,7 @@ const STATIC_FILES = [
     '/Account/Login',
     '/css/candy-shoes.css',
     '/manifest.json',
+    '/offline.html', // 👈 ¡Agregado aquí para que no falle el modo offline!
     '/icons/icon-192x192.png',
     '/icons/icon-512x512.png',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css',
@@ -94,6 +93,11 @@ self.addEventListener('fetch', event => {
     event.respondWith(
         fetch(event.request)
             .then(response => {
+                // Validar que la respuesta sea válida antes de cachear
+                if (!response || response.status !== 200 || response.type === 'opaque') {
+                    return response;
+                }
+
                 const responseClone = response.clone();
                 caches.open(DYNAMIC_CACHE)
                     .then(cache => {
@@ -107,6 +111,7 @@ self.addEventListener('fetch', event => {
                         if (cachedResponse) {
                             return cachedResponse;
                         }
+                        // Si la ruta no está cacheada, muestra el archivo offline seguro
                         return caches.match('/offline.html');
                     });
             })
@@ -114,7 +119,7 @@ self.addEventListener('fetch', event => {
 });
 
 // ============================================================
-// 📩 SINCERONIZACIÓN EN SEGUNDO PLANO
+// 📩 SINCRONIZACIÓN EN SEGUNDO PLANO
 // ============================================================
 self.addEventListener('sync', event => {
     console.log('[Service Worker] Sync event received:', event.tag);

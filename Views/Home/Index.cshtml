@@ -2,111 +2,331 @@
     ViewData["Title"] = "Inicio - Candy Shoes";
 }
 
-<div class="row align-items-center min-vh-75">
+<!-- ===== BIENVENIDA PRINCIPAL & CARRUSEL ===== -->
+<div class="row align-items-center min-vh-75 g-5">
+
+    <!-- COLUMNA IZQUIERDA: TEXTO Y ACCIONES -->
     <div class="col-lg-6">
-        <div class="pe-lg-5">
-            <h1 class="display-3 fw-bold text-candy-primary">
+        <div class="pe-lg-4">
+            <h1 class="display-3 fw-bold text-candy-primary text-hero-title animate-fade-in">
                 <i class="fas fa-shoe-prints me-2"></i>Candy Shoes
             </h1>
             <h2 class="display-6 fw-semibold text-dark mb-4">
                 Calzado con <span style="color: #FF6B6B;">estilo</span> y <span style="color: #FECA57;">dulzura</span>
             </h2>
-            <p class="lead text-muted mb-4">
+            <p class="lead text-muted mb-4-custom">
                 Descubre nuestra colección de tenis exclusivos, diseñados para
                 combinar <strong>comodidad</strong> y <strong>tendencia</strong>
                 con un toque único que te hará brillar.
             </p>
-            <div class="d-flex flex-wrap gap-3">
-                <a asp-controller="Tienda" asp-action="Index" class="btn btn-candy btn-lg">
+            <div class="d-flex flex-wrap gap-3 mb-5">
+                <a asp-controller="Tienda" asp-action="Index" class="btn btn-candy btn-lg px-4 py-3 shadow">
                     <i class="fas fa-store me-2"></i>Ir a la Tienda
                 </a>
-                <a asp-controller="Account" asp-action="Register" class="btn btn-candy-outline btn-lg">
+                <a asp-controller="Account" asp-action="Register" class="btn btn-candy-outline btn-lg px-4 py-3">
                     <i class="fas fa-user-plus me-2"></i>Regístrate
                 </a>
             </div>
 
-            <!-- Estadísticas rápidas -->
-            <div class="row mt-5 g-3">
+            <!-- Estadísticas rápidas estilizadas -->
+            <div class="row mt-5 g-3 stats-container">
                 <div class="col-4">
-                    <div class="text-center">
-                        <h3 class="fw-bold text-candy-primary">+500</h3>
-                        <p class="text-muted small">Productos</p>
+                    <div class="stat-box text-center">
+                        <h3 class="fw-bold text-candy-primary m-0">+500</h3>
+                        <p class="text-muted small m-0 mt-1">Productos</p>
                     </div>
                 </div>
                 <div class="col-4">
-                    <div class="text-center">
-                        <h3 class="fw-bold text-candy-secondary">+1000</h3>
-                        <p class="text-muted small">Clientes</p>
+                    <div class="stat-box text-center">
+                        <h3 class="fw-bold text-candy-secondary m-0">+1000</h3>
+                        <p class="text-muted small m-0 mt-1">Clientes</p>
                     </div>
                 </div>
                 <div class="col-4">
-                    <div class="text-center">
-                        <h3 class="fw-bold" style="color: #FECA57;">4.9★</h3>
-                        <p class="text-muted small">Valoración</p>
+                    <div class="stat-box text-center">
+                        <h3 class="fw-bold m-0" style="color: #FECA57;">4.9★</h3>
+                        <p class="text-muted small m-0 mt-1">Valoración</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-6 d-none d-lg-block text-center">
-        <div class="position-relative">
-            <!-- Imagen decorativa de zapatos usando Font Awesome -->
-            <div class="bg-candy-light rounded-4 p-5 shadow-lg" style="background: linear-gradient(135deg, #FFF8F0 0%, #FFE8D6 100%);">
-                <i class="fas fa-shoe-prints" style="font-size: 10rem; color: #FF6B6B; opacity: 0.8;"></i>
-                <div class="mt-3">
-                    <span class="badge bg-danger rounded-pill px-4 py-2 me-2">
-                        <i class="fas fa-tag me-1"></i>Ofertas
-                    </span>
-                    <span class="badge bg-warning rounded-pill px-4 py-2">
-                        <i class="fas fa-star me-1"></i>Nuevos
-                    </span>
+
+    <!-- COLUMNA DERECHA: NUEVO CARRUSEL PREMIUM DE PRODUCTOS -->
+    <div class="col-lg-6 text-center">
+        <div class="contenedor-carrusel-premium shadow-lg">
+
+            <div id="carouselHeroCandy" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3500">
+
+                <!-- Indicadores inferiores del carrusel -->
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselHeroCandy" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselHeroCandy" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselHeroCandy" data-bs-slide-to="2" aria-label="Slide 3"></button>
                 </div>
-                <p class="mt-3 text-muted fw-bold">
-                    <i class="fas fa-truck me-2 text-candy-primary"></i>
-                    Envíos a todo el país
-                </p>
+
+                <!-- Diapositivas (Ajusta las URLs de imágenes si deseas usar unas locales tuyas) -->
+                <div class="carousel-inner">
+
+                    <!-- Slide 1: Jordan Destacados -->
+                    <div class="carousel-item active">
+                        <div class="carrusel-img-wrapper">
+                            <span class="badge-carrusel bg-danger"><i class="fas fa-fire me-1"></i> Lo más Buscado</span>
+                            <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?q=80&w=600&auto=format&fit=crop" class="d-block w-100 img-carousel-item" alt="Jordan Retro">
+                            <div class="carousel-caption-custom">
+                                <h5>Línea Retro Premium</h5>
+                                <p>Exclusividad en cada pisada</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2: Urban Style -->
+                    <div class="carousel-item">
+                        <div class="carrusel-img-wrapper">
+                            <span class="badge-carrusel bg-warning text-dark"><i class="fas fa-star me-1"></i> Nuevo Ingreso</span>
+                            <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=600&auto=format&fit=crop" class="d-block w-100 img-carousel-item" alt="Urban Sneakers">
+                            <div class="carousel-caption-custom">
+                                <h5>Estilo Urbano Casual</h5>
+                                <p>Diseños que combinan con todo tu armario</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3: Ediciones Limitadas -->
+                    <div class="carousel-item">
+                        <div class="carrusel-img-wrapper">
+                            <span class="badge-carrusel bg-success"><i class="fas fa-check me-1"></i> Stock Disponible</span>
+                            <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=600&auto=format&fit=crop" class="d-block w-100 img-carousel-item" alt="Limited Edition">
+                            <div class="carousel-caption-custom">
+                                <h5>Ediciones Especiales</h5>
+                                <p>Sé el primero en marcar la tendencia</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Controles de navegación del carrusel -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselHeroCandy" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon-custom" aria-hidden="true"><i class="fas fa-chevron-left"></i></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselHeroCandy" data-bs-slide="next">
+                    <span class="carousel-control-next-icon-custom" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
             </div>
+
         </div>
     </div>
 </div>
 
-<!-- Sección de categorías destacadas -->
-<div class="row mt-5 g-4">
+<!-- ===== SECCIÓN DE BENEFICIOS (REEMPLAZA A LAS CATEGORÍAS ANTERIORES) ===== -->
+<div class="row mt-5 pt-5 g-4 section-beneficios-container">
     <div class="col-12">
-        <h3 class="section-title text-center mb-4">Categorías Destacadas</h3>
+        <h3 class="section-title text-center mb-5">La Experiencia Candy Shoes</h3>
     </div>
+
     <div class="col-md-4">
-        <div class="card-candy text-center p-4">
-            <i class="fas fa-running" style="font-size: 3rem; color: #FF6B6B;"></i>
-            <h5 class="mt-3">Running</h5>
-            <p class="text-muted small">Rendimiento y comodidad</p>
+        <div class="card-candy card-beneficio text-center p-4">
+            <div class="icon-circle-container mx-auto bg-light-primary">
+                <i class="fas fa-truck text-candy-primary"></i>
+            </div>
+            <h5 class="mt-4 fw-bold text-candy-dark">Envíos a todo el país</h5>
+            <p class="text-muted small px-2">Recibe tus tenis favoritos de forma rápida y segura en cualquier departamento de Bolivia.</p>
         </div>
     </div>
+
     <div class="col-md-4">
-        <div class="card-candy text-center p-4">
-            <i class="fas fa-walking" style="font-size: 3rem; color: #4ECDC4;"></i>
-            <h5 class="mt-3">Casual</h5>
-            <p class="text-muted small">Estilo diario</p>
+        <div class="card-candy card-beneficio text-center p-4">
+            <div class="icon-circle-container mx-auto bg-light-secondary">
+                <i class="fas fa-shield-alt text-candy-secondary"></i>
+            </div>
+            <h5 class="mt-4 fw-bold text-candy-dark">Garantía Asegurada</h5>
+            <p class="text-muted small px-2">¿No te quedó tu talla? No te preocupes, gestionamos tus cambios de calzado sin complicaciones.</p>
         </div>
     </div>
+
     <div class="col-md-4">
-        <div class="card-candy text-center p-4">
-            <i class="fas fa-basketball-ball" style="font-size: 3rem; color: #FECA57;"></i>
-            <h5 class="mt-3">Deportivos</h5>
-            <p class="text-muted small">Para tu mejor juego</p>
+        <div class="card-candy card-beneficio text-center p-4">
+            <div class="icon-circle-container mx-auto bg-light-accent">
+                <i class="fas fa-gem" style="color: #FECA57;"></i>
+            </div>
+            <h5 class="mt-4 fw-bold text-candy-dark">Calidad Premium</h5>
+            <p class="text-muted small px-2">Seleccionamos cuidadosamente cada modelo garantizando confort, durabilidad y autenticidad.</p>
         </div>
     </div>
 </div>
 
-<!-- Si el usuario está logueado, mostrar mensaje personalizado -->
+<!-- ALERTA DE BIENVENIDA SI ESTÁ LOGUEADO -->
 @if (!string.IsNullOrEmpty(Context.Session.GetString("UsuarioId")))
 {
-    <div class="alert alert-success mt-4 rounded-4 border-0 shadow-sm">
-        <i class="fas fa-check-circle me-2"></i>
-        ¡Bienvenido de vuelta, <strong>@Context.Session.GetString("UsuarioNombre")</strong>!
-        <a asp-controller="Tienda" asp-action="Index" class="alert-link ms-2">
-            Visita nuestra tienda <i class="fas fa-arrow-right"></i>
-        </a>
+    <div class="alert alert-success mt-5 rounded-4 border-0 shadow-sm p-3 animate-fade-in">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <i class="fas fa-check-circle me-2 fs-5"></i>
+                ¡Qué bueno verte de nuevo, <strong>@Context.Session.GetString("UsuarioNombre")</strong>! Explora lo nuevo que tenemos hoy.
+            </div>
+            <a asp-controller="Tienda" asp-action="Index" class="btn btn-success btn-sm rounded-pill px-3">
+                Ir a Vitrina <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
     </div>
 }
-<!-- Forzar nuevo deploy en Vercel -->
+
+<!-- ===== HOJA DE ESTILOS PERSONALIZADA COMPLEMENTARIA ===== -->
+<style>
+    .mb-4-custom {
+        margin-bottom: 2rem;
+    }
+
+    .text-candy-dark {
+        color: #2C3E50;
+    }
+
+    /* 📊 Estadísticas decoradas */
+    .stat-box {
+        background: white;
+        padding: 12px;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+        border: 1px solid #f8f9fa;
+    }
+
+    /* 🎡 Contenedor del Carrusel Redondeado Premium */
+    .contenedor-carrusel-premium {
+        background: #ffffff;
+        border-radius: 28px;
+        overflow: hidden;
+        border: 4px solid white;
+        box-shadow: 0 15px 40px rgba(255, 107, 107, 0.1) !important;
+    }
+
+    .carrusel-img-wrapper {
+        position: relative;
+        background: #ffffff;
+        height: 380px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .img-carousel-item {
+        height: 100%;
+        width: 100%;
+        object-fit: contain; /* Evita que las imágenes se distorsionen o corten mal */
+        padding: 20px;
+        background: white;
+    }
+
+    /* 🏷️ Badge flotante en el carrusel */
+    .badge-carrusel {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        padding: 6px 16px;
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        font-size: 0.75rem;
+        z-index: 5;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    /* 📝 Textos inferiores del carrusel */
+    .carousel-caption-custom {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(44, 62, 80, 0.85) 0%, rgba(44, 62, 80, 0) 100%);
+        padding: 30px 20px 20px;
+        color: white;
+        text-align: center;
+    }
+
+        .carousel-caption-custom h5 {
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin-bottom: 4px;
+        }
+
+        .carousel-caption-custom p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+    /* 🎛️ Flechas de navegación personalizadas */
+    .carousel-control-prev-icon-custom,
+    .carousel-control-next-icon-custom {
+        background: white;
+        color: #FF6B6B;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+    }
+
+        .carousel-control-prev-icon-custom:hover,
+        .carousel-control-next-icon-custom:hover {
+            background: #FF6B6B;
+            color: white;
+            transform: scale(1.1);
+        }
+
+    /* 💎 Círculos de iconos para los Beneficios */
+    .icon-circle-container {
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+    }
+
+    .bg-light-primary {
+        background: rgba(255, 107, 107, 0.08);
+    }
+
+    .bg-light-secondary {
+        background: rgba(78, 205, 196, 0.08);
+    }
+
+    .bg-light-accent {
+        background: rgba(254, 202, 87, 0.08);
+    }
+
+    .card-beneficio {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid #fcfcfc;
+    }
+
+        .card-beneficio:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.05) !important;
+        }
+
+    /* Animaciones sutiles */
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
